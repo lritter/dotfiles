@@ -1,9 +1,21 @@
 export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 
-source "$BASH_CONFIG_ROOT"/git_prompt
+# Try to load up some completions
+for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh}; do
+  [ -r "$file" ] && source "$file"
+done
+unset file
 
-# Get the path of our "bash env" file (where env variable go) and source it.  This seems 
-# like a bit of a brittle way to do this...
-source "$BASH_CONFIG_ROOT"/bash_env
+for file in "$BASH_CONFIG_ROOT"/{bash_env,history,completion}; do
+  [ -r "$file" ] && source "$file"
+done
+unset file
+
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+  shopt -s "$option" 2> /dev/null
+done
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

@@ -1,0 +1,6 @@
+Host *.animoto.com
+  User root
+  ForwardAgent yes
+
+KeepAlive yes
+ServerAliveInterval 60
