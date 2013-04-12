@@ -1,3 +1,6 @@
+# Try and discover where *this file* lives.  This is a bit annoying and probably not very 
+# reliable since normally I symlink it. It's possilble a better alternative is to just
+# assume that it lives at ~/.bash_profile and go from there...
 export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 
 # Try to load up some completions
