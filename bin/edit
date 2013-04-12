@@ -1,0 +1,10 @@
+#!/bin/bash
+ 
+case "$1" in
+  *_EDITMSG|*MERGE_MSG|*_TAGMSG )
+    subl -w "$1"
+    ;;
+  * )
+    subl "$1"
+    ;;
+esac
