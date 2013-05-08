@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+function exitstatus {
+  if [ "$?" -eq 0 ]
+  then
+    echo ⭐ # Yay, everything went great
+  else
+    echo 💔 # The last command broke my heart...
+  fi
+}

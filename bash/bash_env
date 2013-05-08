@@ -8,7 +8,7 @@ export RUBYOPT="-r rubygems"  # Always require rubygems.
 
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWDIRTYSTATE=1
-export PROMPT_COMMAND='__git_ps1 "\W" " ⭐  "'
+export PROMPT_COMMAND='__git_ps1 "\W" " $(exitstatus)  "'
 
 # Set colors for `ls`
 # NB: In some *nixes, this environment may be any of the following:
