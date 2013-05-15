@@ -1,6 +1,8 @@
 Host *.animoto.com
   User root
   ForwardAgent yes
+  StrictHostKeyChecking no
+  UserKnownHostsFile=/dev/null
 
 KeepAlive yes
 ServerAliveInterval 60
