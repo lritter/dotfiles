@@ -5,6 +5,10 @@ case "$1" in
     subl -w "$1"
     ;;
   * )
-    subl "$1"
+    if [[ -z "$1" ]]; then
+      subl .
+    else
+      subl "$1"
+    fi
     ;;
 esac
