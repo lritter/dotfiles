@@ -9,7 +9,7 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh}
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{exitstatus.function,bash_env,history,completion}; do
+for file in "$BASH_CONFIG_ROOT"/{exitstatus.function,bash_env,history,completion,alias}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
