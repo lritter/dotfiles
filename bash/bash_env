@@ -8,7 +8,7 @@ export RUBYOPT="-r rubygems"  # Always require rubygems.
 
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWDIRTYSTATE=1
-export PROMPT_COMMAND='__git_ps1 "\e[m\W" " $(exitstatus)  "'
+export PROMPT_COMMAND='__git_ps1 "\W" " $(exitstatus)  "'
 
 # Set colors for `ls`
 # NB: In some *nixes, this environment may be any of the following:
@@ -19,6 +19,8 @@ export CLICOLOR="exfxcxdxbxegedabagacad"
 # Set RACK_ENV and ANIMOTO_DIR to some reasonable defaults
 export RACK_ENV=development
 export ANIMOTO_DIR=$HOME/Documents/Animoto/src/stack/config
+
+export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
 
 PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

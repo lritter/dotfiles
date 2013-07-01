@@ -4,7 +4,7 @@
 export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 
 # Try to load up some completions
-for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh}; do
+for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,R}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
