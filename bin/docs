@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+cmd = "open 'dash://#{ARGV.join(' ')}'"
+Kernel.exec(cmd)
