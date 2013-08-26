@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
 
-cmd = "open 'dash://#{ARGV.join(' ')}'"
+case(ARGV[0])
+when "rfc"
+  ARGV.shift
+  cmd = "rfc '#{ARGV.join(' ')}'"
+else
+  cmd = "open 'dash://#{ARGV.join(' ')}'"
+end
+puts cmd
 Kernel.exec(cmd)
