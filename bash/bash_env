@@ -25,4 +25,8 @@ export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
 PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
+
+### Added by the Heroku Toolbelt
+PATH="/usr/local/heroku/bin:$PATH"
+
 export PATH
