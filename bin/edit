@@ -7,6 +7,12 @@ case "$1" in
   * )
     if [[ -z "$1" ]]; then
       subl .
+    elif [[ -f "$@" ]]; then # FIXME: It would be nice to open multiple files here.
+      if [[ $(file --mime-encoding -b $@) = 'binary' ]]; then 
+        open -a "Hex Fiend" $@ 
+      else 
+        subl $@
+      fi
     else
       subl $@
     fi
