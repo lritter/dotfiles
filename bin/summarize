@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
 args <- as.numeric(commandArgs(TRUE));
-summary(args); 
-stdev <- sd(args);
-cat("Std Deviation: ", stdev, "\n");
+cat("Total: ", sum(args), "\n");
+summary(args);
+cat("Std Deviation: ", sd(args), "\n");

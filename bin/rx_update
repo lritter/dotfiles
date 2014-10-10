@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+pushd $(dirname $(readlink $(which rx)))/.. && git pull && popd

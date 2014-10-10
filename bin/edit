@@ -1,20 +1,22 @@
 #!/bin/bash
- 
+
+PRIMARY=subl
+
 case "$1" in
   *_EDITMSG|*MERGE_MSG|*_TAGMSG )
-    subl -w "$1"
+    $PRIMARY -w "$1"
     ;;
   * )
     if [[ -z "$1" ]]; then
-      subl .
+      $PRIMARY .
     elif [[ -f "$@" ]]; then # FIXME: It would be nice to open multiple files here.
-      if [[ -s $@ && $(file --mime-encoding -b $@) = 'binary' ]]; then 
-        open -a "Hex Fiend" $@ 
-      else 
-        subl $@
+      if [[ -s $@ && $(file --mime-encoding -b $@) = 'binary' ]]; then
+        open -a "Hex Fiend" $@
+      else
+        $PRIMARY $@
       fi
     else
-      subl $@
+      $PRIMARY $@
     fi
     ;;
 esac
