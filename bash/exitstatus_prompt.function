@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-function exitstatus_emoji {
+function exitstatus_prompt {
   status=$?
   if [ "$status" -eq 0 ]
   then
     # Yay, everything went great
-    echo -e '\xE2\xAD\x90\xEF\xB8\x8F'
+    echo -e $1
   else
     # The last command broke my heart...
-    echo -e '\xF0\x9F\x92\x94'
+    echo -e $2
   fi
   return $status
 }
