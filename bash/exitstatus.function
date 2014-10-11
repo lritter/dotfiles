@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
 function exitstatus {
-  if [ "$?" -eq 0 ]
+  status=$?
+  if [ "$status" -eq 0 ]
   then
-    echo ⭐ # Yay, everything went great
+    # Yay, everything went great
+    echo -e '\xE2\xAD\x90\xEF\xB8\x8F'
   else
-    echo 💔 # The last command broke my heart...
+    # The last command broke my heart...
+    echo -e '\xF0\x9F\x92\x94'
   fi
+  return $status
 }
