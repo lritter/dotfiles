@@ -8,7 +8,11 @@ export RUBYOPT="-r rubygems"  # Always require rubygems.
 
 export GIT_PS1_SHOWCOLORHINTS=1
 export GIT_PS1_SHOWDIRTYSTATE=1
-export PROMPT_COMMAND='__git_ps1 "\W" " $(exitstatus)  "'
+
+# Set the prompt __git_ps1 sets git status taking the '\W' as an arg. Then set
+# the exit status indicator (also an agrument to __git_ps1. Then set update 
+# Terminal.app's cwd so that new windows and tabs open in same location.
+export PROMPT_COMMAND='__git_ps1 "\W" " $(exitstatus_emoji)  "; update_terminal_cwd'
 
 # Set colors for `ls`
 # NB: In some *nixes, this environment may be any of the following:

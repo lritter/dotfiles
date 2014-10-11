@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function exitstatus {
+function exitstatus_emoji {
   status=$?
   if [ "$status" -eq 0 ]
   then
