@@ -9,7 +9,6 @@ Host bastion
   ControlPersist 60
   ProxyCommand none
 
-
 # Do NOT use the bastion host for mysql proxy or data box
 Host proxy-production data-production engine-ci*
   ProxyCommand none
@@ -28,3 +27,8 @@ Host 10.* Host *.animoto.com
 
 KeepAlive yes
 ServerAliveInterval 60
+
+Host heroku
+  HostName heroku.com
+  IdentityFile ~/.ssh/heroku
+  IdentitiesOnly yes

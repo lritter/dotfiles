@@ -36,6 +36,8 @@ PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/libxml2/lib/pkgconfig # OS-X libxml2
 
+export GOPATH=$HOME/Local/golib
+
 ### Added by the Heroku Toolbelt
 PATH="/usr/local/heroku/bin:$PATH"
 

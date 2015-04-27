@@ -3,7 +3,7 @@
 PRIMARY=subl
 
 case "$1" in
-  *_EDITMSG|*MERGE_MSG|*_TAGMSG )
+  *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo )
     $PRIMARY -w "$1"
     ;;
   * )
