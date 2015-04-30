@@ -1,0 +1,18 @@
+#!/bin/bash
+
+(
+for br in $(git branch -a --no-color --no-merged master | cut -c3- | egrep -v '^RC-' | egrep -v '^DEAD'); do
+  commits=$(git log --format='%h' $br ^master | wc -l)
+  diverge=$(git log --format='%h' $br ^master --boundary | tail -1)
+
+  relativeAgeAtBranchPoint=$(git log -1 --format='%ar' $diverge)
+  timestampAtBranchPoint=$(git log -1 --format='%at' $diverge)
+  
+  timestampOfRecentCommit=$(git show --format='%at' $br | head -1)
+  relativeAgeOfRecentCommit=$(git show --format='%ar' $br | head -1)
+
+  committer=$(git log -1 --format='%ce' $diverge)
+  newHash=$(git log -1 --format='%h' $diverge)
+  echo "$timestampOfRecentCommit | $relativeAgeOfRecentCommit | $relativeAgeAtBranchPoint  | $commits | $committer | $br | $newHash" 
+done
+) | sort -r | cut -d '|' -f 2- | column -s'|' -t -c 80
