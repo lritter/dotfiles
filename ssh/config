@@ -9,11 +9,6 @@ Host bastion
   ControlPersist 60
   ProxyCommand none
 
-# Do NOT use the bastion host for mysql proxy or data box
-Host proxy-production data-production engine-ci*
-  ProxyCommand none
-  User ubuntu
-
 # Use the bastion host for any cloud IP or any Animoto address
 Host 10.* Host *.animoto.com
   User ubuntu

@@ -3,6 +3,7 @@
 (
 for br in $(git branch -a --no-color --no-merged master | cut -c3- | egrep -v '^RC-' | egrep -v '^DEAD'); do
   commits=$(git log --format='%h' $br ^master | wc -l)
+  lines=$(git diff --numstat --pretty='%H' $br master | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("%d | %d\n", plus, minus)}')
   diverge=$(git log --format='%h' $br ^master --boundary | tail -1)
 
   relativeAgeAtBranchPoint=$(git log -1 --format='%ar' $diverge)
@@ -13,6 +14,6 @@ for br in $(git branch -a --no-color --no-merged master | cut -c3- | egrep -v '^
 
   committer=$(git log -1 --format='%ce' $diverge)
   newHash=$(git log -1 --format='%h' $diverge)
-  echo "$timestampOfRecentCommit | $relativeAgeOfRecentCommit | $relativeAgeAtBranchPoint  | $commits | $committer | $br | $newHash" 
+  echo "$timestampOfRecentCommit | $relativeAgeOfRecentCommit | $relativeAgeAtBranchPoint  | $commits | $lines | $committer | $br | $newHash" 
 done
-) | sort -r | cut -d '|' -f 2- | column -s'|' -t -c 80
+) #| sort -r | cut -d '|' -f 2- | column -s'|' -t -c 80
