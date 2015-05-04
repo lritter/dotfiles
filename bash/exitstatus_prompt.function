@@ -5,10 +5,10 @@ function exitstatus_prompt {
   if [ "$status" -eq 0 ]
   then
     # Yay, everything went great
-    echo -e $1
+    echo -e "${1}"
   else
     # The last command broke my heart...
-    echo -e "($status)" $2
+    echo -e "(\E[31m${status}\033[0m)""${2}"
   fi
   return $status
 }
