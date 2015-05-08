@@ -8,7 +8,7 @@ function exitstatus_prompt {
     echo -e "${1}"
   else
     # The last command broke my heart...
-    echo -e "(\E[31m${status}\033[0m)""${2}"
+    echo -e "(${txtred}${status}${txtrst})""${2}"
   fi
   return $status
 }
