@@ -7,8 +7,12 @@ function exitstatus_prompt {
     # Yay, everything went great
     echo -e "${1}"
   else
+    if [ "$SHOW_EXIT_STATUS_IN_PROMPT" = "YES" ]
+    then
+      status_prefix=" (${txtred}${status}${txtrst})"
+    fi
     # The last command broke my heart...
-    echo -e "(${txtred}${status}${txtrst})""${2}"
+    echo -e "${status_prefix}${2}"
   fi
   return $status
 }

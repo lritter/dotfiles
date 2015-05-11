@@ -13,6 +13,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 # SAD_STATUS=' \xF0\x9F\x92\x94  ' # Emoji broken heart
 HAPPY_STATUS=" ${txtylw}☀${txtrst}  "
 SAD_STATUS=" ${txtred}☠${txtrst} "
+SHOW_EXIT_STATUS_IN_PROMPT=YES
 
 # Set the prompt __git_ps1 sets git status taking the '\W' as an arg. Then set
 # the exit status indicator (also an agrument to __git_ps1. Then set update 
