@@ -6,19 +6,8 @@ export EDITOR=edit
 # Set default Ruby options.
 export RUBYOPT="-r rubygems"  # Always require rubygems.
 
-export GIT_PS1_SHOWCOLORHINTS=1
-export GIT_PS1_SHOWDIRTYSTATE=1
 
-# HAPPY_STATUS=' \xE2\xAD\x90\xEF\xB8\x8F  ' # Emoji Star
-# SAD_STATUS=' \xF0\x9F\x92\x94  ' # Emoji broken heart
-HAPPY_STATUS=" ${txtylw}☀${txtrst}  "
-SAD_STATUS=" ${txtred}☠${txtrst} "
-SHOW_EXIT_STATUS_IN_PROMPT=YES
-
-# Set the prompt __git_ps1 sets git status taking the '\W' as an arg. Then set
-# the exit status indicator (also an agrument to __git_ps1. Then set update 
-# Terminal.app's cwd so that new windows and tabs open in same location.
-export PROMPT_COMMAND='__git_ps1 "\W" "$(exitstatus_prompt "${HAPPY_STATUS}" "${SAD_STATUS}")"; update_terminal_cwd'
+export PROMPT_COMMAND='__prompt_command'
 
 # Set colors for `ls`
 # NB: In some *nixes, this environment may be any of the following:
@@ -40,8 +29,10 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/libxml2/lib/pkgconfig # OS-X libxml2
 
 export GOPATH=$HOME/Local/golib
+export GOPATHBIN="${GOPATH}"/bin
 
 ### Added by the Heroku Toolbelt
-PATH="/usr/local/heroku/bin:$PATH"
+HEROKU_TOOLBELT_PATH="/usr/local/heroku/bin"
 
-export PATH
+export PATH="$HEROKU_TOOLBELT_PATH:$GOPATHBIN:$PATH"
+
