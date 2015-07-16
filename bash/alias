@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
 alias be='bundle exec'
+alias serve='python -m SimpleHTTPServer'

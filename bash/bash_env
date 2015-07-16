@@ -36,3 +36,5 @@ HEROKU_TOOLBELT_PATH="/usr/local/heroku/bin"
 
 export PATH="$HEROKU_TOOLBELT_PATH:$GOPATHBIN:$PATH"
 
+PERL_MB_OPT="--install_base \"/Users/lritter/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/Users/lritter/perl5"; export PERL_MM_OPT;
