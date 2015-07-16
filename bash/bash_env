@@ -2,6 +2,8 @@
 
 # Setup editor to be handy-dandy editor helper script
 export EDITOR=edit
+export VISUAL='edit -w'
+set -o vi
 
 # Set default Ruby options.
 export RUBYOPT="-r rubygems"  # Always require rubygems.
