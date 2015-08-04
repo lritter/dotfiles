@@ -1,0 +1,29 @@
+#! /usr/bin/env bash
+
+### Search through $MYPATHS looking for $1. Echos located path and returns 0 if found
+### otherwise returns 1
+findmyfile() {
+  IFS=":"
+  local paths=()
+  read -a paths <<< "${MYPATHS}"
+  local val=1
+  local found_path=''
+
+  for p in "${paths[@]}"
+  do
+    local test_path="${p}/${1}"
+    if [[ -e "${test_path}" ]]; then
+      found_path="${test_path}"
+      val=0
+      break
+    elif [[ -e "${p}" ]]; then
+      found_path="${p}"
+      val=0
+    fi
+  done
+
+  echo "${found_path}"
+  return $val
+}
+
+export -f findmyfile  

@@ -1,0 +1,38 @@
+#! /usr/bin/env bash
+
+### Open the argument(s) in an appropriate editor. Try to be smart about it.
+__edit() {
+  PRIMARY=subl # TODO: make this use $EDITOR or $VISUAL
+  case "$1" in
+    *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
+      $PRIMARY -w "$1"
+      ;;
+    * ) ## For everything else
+      if [[ -z "$1" ]]; then
+        $PRIMARY .
+        # elif [[ "$1" =~ ^bash-fc-[0-9]+$ ]]; then
+        #   $PRIMARY -w "$1"
+      elif [[ -f "$@" ]]; then # FIXME: It would be nice to open multiple files here.
+        if [[ -s $@ && $(file --mime-encoding -b $@) = 'binary' ]]; then
+          open -a "Hex Fiend" $@
+        else
+          $PRIMARY $@
+        fi
+      else
+        found_path=`findmyfile "${1}"`
+        found=$?
+        if [ $found -eq 0 ]; then
+          change_to="${found_path}"
+          if [ ! -d "${change_to}" ]; then
+            change_to=$(dirname "${change_to}")
+          fi
+          pushd "${change_to}" > /dev/null && $PRIMARY "${found_path}"
+        else
+          $PRIMARY $@
+        fi
+      fi
+      ;;
+  esac
+
+  return $?
+}

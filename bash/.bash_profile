@@ -1,4 +1,4 @@
-# Try and discover where *this file* lives.  This is a bit annoying and probably not very 
+# Try and discover where *this file* lives.  This is a bit annoying and probably not very
 # reliable since normally I symlink it. It's possilble a better alternative is to just
 # assume that it lives at ~/.bash_profile and go from there...
 
@@ -11,7 +11,7 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,custom_prompt.function,update_terminal_cwd.function,exitstatus_prompt.function,copy.function,bash_env,history,completion,alias}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,custom_prompt.function,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,bash_env,history,completion,aliases}; do
   [ -r "$file" ] && source "$file"
 done
 unset file

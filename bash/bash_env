@@ -2,8 +2,7 @@
 
 # Setup editor to be handy-dandy editor helper script
 export EDITOR=edit
-export VISUAL='edit -w'
-set -o vi
+export VISUAL="$EDITOR"
 
 # Set default Ruby options.
 export RUBYOPT="-r rubygems"  # Always require rubygems.
@@ -23,9 +22,12 @@ export ANIMOTO_DIR=$HOME/Documents/Animoto/src/stack/config
 
 export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
 
+PATH=$PATH:$HOME/.dotfiles/bin
 PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
+
+export MYPATHS="/Users/lritter/Documents/Animoto/src/stackimoto/applications:/Users/lritter/Documents/Animoto/src/packages:/Users/lritter/.dotfiles"
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/libxml2/lib/pkgconfig # OS-X libxml2
