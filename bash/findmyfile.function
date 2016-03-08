@@ -16,14 +16,22 @@ findmyfile() {
       found_path="${test_path}"
       val=0
       break
-    elif [[ -e "${p}" ]]; then
-      found_path="${p}"
+    elif [[ -e "${1}" ]]; then
+      found_path="${1}"
       val=0
+      break
     fi
   done
 
   echo "${found_path}"
   return $val
+}
+
+goto() {
+  cd $(findmyfile ${1})
+  if [[ ! -z "${2}" ]]; then
+    ${2}
+  fi
 }
 
 export -f findmyfile  
