@@ -18,7 +18,8 @@ export CLICOLOR="exfxcxdxbxegedabagacad"
 
 # Set RACK_ENV and ANIMOTO_DIR to some reasonable defaults
 export RACK_ENV=development
-export ANIMOTO_DIR=$HOME/Documents/Animoto/src/stack/config
+export ANIMOTO_STACK_ROOT=/Users/lritter/Documents/Animoto/src/stack
+export ANIMOTO_DIR=${ANIMOTO_STACK_ROOT}/config
 
 export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
 
@@ -27,7 +28,7 @@ PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
 
-export MYPATHS="/Users/lritter/Documents/Animoto/src/stackimoto/applications:/Users/lritter/Documents/Animoto/src/packages:/Users/lritter/.dotfiles"
+export MYPATHS="/Users/lritter/Documents/Animoto/src/stack/applications:/Users/lritter/Documents/Animoto/src/packages:/Users/lritter/.dotfiles"
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/libxml2/lib/pkgconfig # OS-X libxml2
