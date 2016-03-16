@@ -5,5 +5,6 @@ if [ "$1" = "production" ]; then
   # Without a tunnel
   # psql -h animoto-production.csop3vsuhaoy.us-east-1.redshift.amazonaws.com -p 5439 -U animoto -d animoto
 elif [ "$1" = "qa" ]; then
-  psql -h animoto-qa.csop3vsuhaoy.us-east-1.redshift.amazonaws.com -p 5439 -U animoto -d animoto
+  psql -h 127.0.0.1 -U animoto -d animoto -p 5438
+  # psql -h animoto-qa.csop3vsuhaoy.us-east-1.redshift.amazonaws.com -p 5439 -U animoto -d animoto
 fi
