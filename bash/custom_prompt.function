@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 
-# HAPPY_STATUS=' \xE2\xAD\x90\xEF\xB8\x8F  ' # Emoji Star
-# SAD_STATUS=' \xF0\x9F\x92\x94  ' # Emoji broken heart
+USE_EMOJI_PROMPT=''
+
+EMOJI_STAR='\xE2\xAD\x90\xEF\xB8\x8F'
+EMOJI_BROKEN_HEART='\xF0\x9F\x92\x94'
+
+EXIT_STATUS_COLOR="${txtred}"
+
 SHOW_EXIT_STATUS_IN_PROMPT=YES
 SHOW_GIT_STATUS_IN_PROMPT=YES
 GIT_PS1_SHOWCOLORHINTS=1
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWCOLORHINTS=1
-HAPPY_STATUS=" \[${txtylw}\]☀\[${reset}\] "
-SAD_STATUS=" \[${txtred}\]☠\[${reset}\] "
-EXIT_STATUS_COLOR="${txtred}"
+
+if [ ! -z $USE_EMOJI_PROMPT ]; then
+  HAPPY_STATUS=" ${EMOJI_STAR}\[${reset}\]  "
+  SAD_STATUS=" ${EMOJI_BROKEN_HEART}\[${reset}\]  "
+else
+  HAPPY_STATUS=" \[${txtylw}\]☀\[${reset}\] "
+  SAD_STATUS=" \[${txtred}\]☠\[${reset}\] "
+fi
 
 function __exist_status_text {
   local status=$1
@@ -36,7 +46,7 @@ function __exist_status_text {
 }
 
 # Set the prompt __git_ps1 sets git status taking the '\W' as an arg. Then set
-# the exit status indicator (also an agrument to __git_ps1. Then set update 
+# the exit status indicator (also an agrument to __git_ps1. Then set update
 # Terminal.app's cwd so that new windows and tabs open in same location.
 function __prompt_command() {
   local status=$?
@@ -44,7 +54,7 @@ function __prompt_command() {
   update_terminal_cwd
 
   local ps1='\W' # Set a default prompt format string
-  
+
   if [ "$SHOW_GIT_STATUS_IN_PROMPT" = 'YES' ]
   then
     __git_ps1 '\W' '' # Run __git_ps1 in "pc" mode to get colorization
