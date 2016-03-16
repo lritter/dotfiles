@@ -1,12 +1,12 @@
 #!/bin/bash
 
-PRIMARY=subl # TODO: make this use $EDITOR or $VISUAL
+PRIMARY=subl3 # TODO: make this use $EDITOR or $VISUAL
 case "$1" in
   *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
     $PRIMARY -w "$1"
     ;;
   * ) ## For everything else
-    if [[ -z "$1" ]]; then
+    if [[ -z "$1" || "$1" == "." ]]; then
       $PRIMARY .
       # elif [[ "$1" =~ ^bash-fc-[0-9]+$ ]]; then
       #   $PRIMARY -w "$1"
