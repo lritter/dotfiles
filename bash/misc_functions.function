@@ -1,0 +1,14 @@
+rainbow() {
+  default_stride=1
+  default_offset=0
+
+  stride="${1:-$default_stride}"
+  offset="${2:-$default_offset}"
+
+  for l in $(seq $(tput lines)); do
+    c=$(echo "define abs(i) {if (i < 0) return (-i); return (i) }; (abs(215-(${l}*${stride})+${offset}) % 215) + 16" | bc)
+    printf "\x1b[48;5;${c}m\n"
+  done
+  tput sgr0
+  printf "\n"
+}

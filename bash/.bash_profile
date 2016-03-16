@@ -11,7 +11,7 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,custom_prompt.function,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,bash_env,history,completion,aliases}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,custom_prompt.function,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,bash_env,history,completion,aliases,misc_functions.function}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
