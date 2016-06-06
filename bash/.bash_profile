@@ -3,6 +3,8 @@
 # assume that it lives at ~/.bash_profile and go from there...
 
 export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+source "$BASH_CONFIG_ROOT"/bash_env
+
 shopt -s histappend # Append to history file instead of overwrite
 
 # Try to load up some completions
@@ -11,10 +13,12 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,custom_prompt.function,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,bash_env,history,completion,aliases,misc_functions.function}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
+
+[[ $- = *i* ]] && source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 
 # Enable some Bash 4 features when possible:
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`

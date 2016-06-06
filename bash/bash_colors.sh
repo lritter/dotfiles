@@ -1,5 +1,8 @@
 #!/bin/sh
 
+if [ "$TERM" == "xterm-256color" ]
+then
+
 # txtblk='\e[0;30m' # Black - Regular
 # txtred='\e[0;31m' # Red
 # txtgrn='\e[0;32m' # Green
@@ -89,3 +92,5 @@ undblu=$under$blue
 undmag=$under$magenta
 undcyn=$under$cyan
 undwht=$under$white
+
+fi

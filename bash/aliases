@@ -2,3 +2,7 @@
 
 alias be='bundle exec'
 alias serve='python -m SimpleHTTPServer'
+
+# alias 9p="$PLAN9/bin/9p"
+# alias plumber="$PLAN9/bin/plumber"
+# alias 9pserve="$PLAN9/bin/9pserve"

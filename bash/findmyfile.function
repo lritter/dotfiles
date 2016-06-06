@@ -1,37 +1,35 @@
 #! /usr/bin/env bash
 
+### TODO: consider using something like this:
+###       find $(echo $MYPATHS | tr ":" " ") -type d -maxdepth 1 | fzy
+
+__find_in_mypaths() {
+  echo ${MYPATHS} | tr ":" "\n" | xargs -J{} find '{}' -maxdepth 1 $@
+}
+
 ### Search through $MYPATHS looking for $1. Echos located path and returns 0 if found
 ### otherwise returns 1
 findmyfile() {
-  IFS=":"
-  local paths=()
-  read -a paths <<< "${MYPATHS}"
-  local val=1
-  local found_path=''
 
-  for p in "${paths[@]}"
-  do
-    local test_path="${p}/${1}"
-    if [[ -e "${test_path}" ]]; then
-      found_path="${test_path}"
-      val=0
-      break
-    elif [[ -e "${1}" ]]; then
-      found_path="${1}"
-      val=0
-      break
-    fi
-  done
+  ### TODO: something like this?
+  local found_path=`__find_in_mypaths -type d -ipath "*/${1}"`
 
   echo "${found_path}"
   return $val
 }
 
 goto() {
-  cd $(findmyfile ${1})
+  local path=$(findmyfile ${1})
+
+  if [[ -z "${path}" ]]; then
+    path=$({ __find_in_mypaths -type d & __find_in_mypaths -type l -exec test -d {} \; -print ; } 2>/dev/null | fzy)
+  fi
+
+  cd "${path}"
+
   if [[ ! -z "${2}" ]]; then
     ${2}
   fi
 }
 
-export -f findmyfile  
+export -f findmyfile

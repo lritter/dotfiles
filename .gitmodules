@@ -1,3 +1,6 @@
 [submodule "preferences/terminal/terminal-solarized"]
 	path = preferences/terminal/terminal-solarized
 	url = git@github.com:lritter/osx-lion-terminal.app-colors-solarized.git
+[submodule "bash/liquidprompt"]
+	path = bash/liquidprompt
+	url = git@github.com:lritter/liquidprompt.git

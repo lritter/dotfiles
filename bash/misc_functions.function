@@ -12,3 +12,8 @@ rainbow() {
   tput sgr0
   printf "\n"
 }
+
+# acme() {
+#   plumber 2&>1 > /dev/null
+#   TERM=dumb SHELL=rc nohup 9 acme -a -f $PLAN9/font/fixed/unicode.9x18.font $* > /dev/null &
+# }
