@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+function usage() {
+cat >&2 << END_USAGE
+usage: $(basename $0) -L 1234 -R 5678 -H example.com - my --fancy command --with args
+
+Summary:
+  Run a command over an automatically constructed ssh tunnel, tearing down the
+  tunnel when the given command exits. Usually you will use "tunnel" as a helper
+  in other scripts.
+
+Options:
+
+  -L XXXX         Use the given port number for the local end of the tunnel
+  -R YYYY         Use the given port number for the remote end of the tunnel
+  -H target.host  The host to which you are trying to tunnel
+  -P proxy.host   The host through which you are tunnelling
+
+  -               End of options for the "tunnel" command. Everything after '-'
+                  will be treated as the command (and arguments) be executed in
+                  the context of the tunnel.
+
+Example:
+
+Create a tunnel for connecting to redshift via an encrypted tunnel.
+
+  tunnel -L 5438 -R 5439 -H redshift.amazonaws.com - psql -h 127.0.0.1 -p 5438 -U animoto -d animoto
+
+END_USAGE
+}
+
+_proxy_host=bastion
+
+while [[ $# > 0 ]] ; do
+  _current_opt="${1}"
+  shift
+
+  case "${_current_opt}"
+  in
+    "-L") _local_port=$1
+          shift
+          ;;
+    "-R") _remote_port=$1
+          shift
+          ;;
+    "-H") _target_host=$1
+          shift
+          ;;
+    "-P") _proxy_host=$1
+          shift
+          ;;
+    "--help")
+          usage
+          exit 1
+          ;;
+     "-") break
+          ;;
+  esac
+done
+
+ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
+$@
+ssh -T -O "exit" bastion
