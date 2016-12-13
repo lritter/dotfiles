@@ -16,6 +16,8 @@ case "$1" in
       else
         $PRIMARY $@
       fi
+    elif [[ -d "${1}" ]]; then
+      $PRIMARY "${1}"
     else
       found_path=`findmyfile "${1}"`
       found=$?
@@ -24,7 +26,7 @@ case "$1" in
         if [ ! -d "${change_to}" ]; then
           change_to=$(dirname "${change_to}")
         fi
-        # TODO: would be nice to make this pushd work. If you look at the 
+        # TODO: would be nice to make this pushd work. If you look at the
         # __edit function, it works there, but git doesn't like a function as "editor"
         pushd "${change_to}" > /dev/null && $PRIMARY "${found_path}"
       else

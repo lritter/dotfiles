@@ -58,6 +58,11 @@ while [[ $# > 0 ]] ; do
   esac
 done
 
-ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
-$@
-ssh -T -O "exit" bastion
+if [[ -z ${@} ]]; then
+  echo Executing: ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion 1>&2
+  ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
+else
+  ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
+  $@
+  ssh -T -O "exit" bastion
+fi

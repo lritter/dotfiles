@@ -39,3 +39,4 @@ export RAILS_ENV=development
 export ANIMOTO_DIR=/Users/lritter/Documents/Animoto/src/stack/config
 eval "$(nodenv init -)"
 ulimit -n 10240
+export globals

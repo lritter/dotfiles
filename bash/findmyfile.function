@@ -32,4 +32,5 @@ goto() {
   fi
 }
 
+export -f __find_in_mypaths
 export -f findmyfile

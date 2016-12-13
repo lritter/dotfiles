@@ -2,6 +2,7 @@
 
 alias be='bundle exec'
 alias serve='python -m SimpleHTTPServer'
+alias open-pr='pull-report --org animoto --pr-url --html | bcat --title="Open Pull Requests"'
 
 # alias 9p="$PLAN9/bin/9p"
 # alias plumber="$PLAN9/bin/plumber"
