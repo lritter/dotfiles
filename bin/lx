@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+# Run stuff from `animoto.yml` with ease and grace! e.g.:
+#   lx test # run the "test" command defined in animoto.yml
+
+# TODO: Figure out how to print help documentation
+
 require 'yaml'
 
 EXIT_CODES = {
@@ -61,6 +66,10 @@ class CommandRegistry
   private
   attr_accessor :commands
 
+  # This method is meant to convert commands into a standard, callable form.
+  # The way to do this might vary. Right now the only type of command is a command
+  # to be executec, but I wanted to leave the option open for other kinds of 
+  # commands, some of which might be different kinds of ruby code.
   def preprocess_commands(command_hash)
     new_command_hash = {}
     command_hash.each do |name, cmd|
