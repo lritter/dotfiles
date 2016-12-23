@@ -86,10 +86,16 @@ class CommandRegistry
   end
 end
 
-registry = CommandRegistry.from_yaml_path(get_animoto_yaml)
+def cli(argv)
+  registry = CommandRegistry.from_yaml_path(get_animoto_yaml)
 
-if registry.list_commands.include?(ARGV[0])
-  registry.run_command(ARGV[0])
-else
-  log "Available commands: #{registry.list_commands.join(', ')}", EXIT_CODES[:UNKNOWN_COMMAND]
+  if registry.list_commands.include?(argv[0])
+    registry.run_command(argv[0])
+  else
+    log "Available commands: #{registry.list_commands.join(', ')}", EXIT_CODES[:UNKNOWN_COMMAND]
+  end
+end
+
+if __FILE__ == $0
+  cli(ARGV)
 end
