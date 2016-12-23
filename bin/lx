@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+EXIT_CODES = {
+  :NOERROR => 0,
+  :CANT_FIND_ANIMOTO_YAML => 1,
+  :YAML_LOAD_ERROR => 2,
+  :UNKNOWN_COMMAND => 3,
+  :UNINTERPRETABLE_COMMAND => 4
+}.freeze
+
+def log(msg, exit_code=0)
+  $stderr.puts msg
+  if exit_code && exit_code != EXIT_CODES[:NOERROR]
+    exit exit_code
+  end
+end
+
+def get_animoto_yaml
+  pwd = Dir.pwd
+  animoto_yaml = "animoto.yml"
+  candidate = File.join(pwd, animoto_yaml)
+  if !File.exist?(candidate)
+    log "Could not locate '#{animoto_yaml}' in '#{pwd}'", EXIT_CODES[:CANT_FIND_ANIMOTO_YAML]
+  end
+
+  candidate
+end
+
+class CommandRegistry
+  # TODO: CommandRegistry is not well-factored:
+  #       - it should really not know about exit codes
+  #       - logging should be injected
+
+  def self.from_yaml_path(path)
+    begin
+      new(YAML.load(File.read(path)))
+    rescue Exception => e
+      log "Could not load file '#{path}' due to: #{e.message}", EXIT_CODES[:YAML_LOAD_ERROR]
+    end
+  end
+
+  def initialize(command_hash = {})
+    self.commands = preprocess_commands(command_hash)
+  end
+
+  def list_commands
+    commands.keys.sort
+  end
+
+  def run_command(cmd)
+    if !commands.key?(cmd) || commands[cmd].nil?
+      log "Unknown command '#{cmd}'", EXIT_CODES[:UNKNOWN_COMMAND]
+    end
+
+    executable = commands[cmd]
+    executable.call()
+  end
+
+  private
+  attr_accessor :commands
+
+  def preprocess_commands(command_hash)
+    new_command_hash = {}
+    command_hash.each do |name, cmd|
+      if cmd.kind_of?(String)
+        new_command_hash[name] = lambda { 
+          log "Running '#{name}' via #{cmd.inspect}"
+          Kernel.exec(cmd) 
+        }
+      else
+        log "Don't know how to interpret command '#{name}' of type #{cmd.class}", EXIT_CODES[:UNINTERPRETABLE_COMMAND]
+      end
+    end
+    new_command_hash
+  end
+end
+
+registry = CommandRegistry.from_yaml_path(get_animoto_yaml)
+
+if registry.list_commands.include?(ARGV[0])
+  registry.run_command(ARGV[0])
+else
+  log "Available commands: #{registry.list_commands.join(', ')}", EXIT_CODES[:UNKNOWN_COMMAND]
+end
