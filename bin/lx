@@ -54,13 +54,13 @@ class CommandRegistry
     commands.keys.sort
   end
 
-  def run_command(cmd)
+  def run_command(cmd, *args)
     if !commands.key?(cmd) || commands[cmd].nil?
       log "Unknown command '#{cmd}'", EXIT_CODES[:UNKNOWN_COMMAND]
     end
 
     executable = commands[cmd]
-    executable.call()
+    executable.call(*args)
   end
 
   private
@@ -74,9 +74,9 @@ class CommandRegistry
     new_command_hash = {}
     command_hash.each do |name, cmd|
       if cmd.kind_of?(String)
-        new_command_hash[name] = lambda { 
+        new_command_hash[name] = lambda { |*args|
           log "Running '#{name}' via #{cmd.inspect}"
-          Kernel.exec(cmd) 
+          Kernel.exec(cmd, *args) 
         }
       else
         log "Don't know how to interpret command '#{name}' of type #{cmd.class}", EXIT_CODES[:UNINTERPRETABLE_COMMAND]
@@ -90,7 +90,8 @@ def cli(argv)
   registry = CommandRegistry.from_yaml_path(get_animoto_yaml)
 
   if registry.list_commands.include?(argv[0])
-    registry.run_command(argv[0])
+    cmd = argv.shift
+    registry.run_command(cmd, *argv)
   else
     log "Available commands: #{registry.list_commands.join(', ')}", EXIT_CODES[:UNKNOWN_COMMAND]
   end
