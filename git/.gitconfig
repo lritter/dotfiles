@@ -6,8 +6,5 @@
 [push]
 	default = simple
 
-[github]
-  token = ca46b786680594f9803332bc5284658094a17aec
-
 [alias]
 	update = "pull --rebase origin master "

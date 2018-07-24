@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRIMARY=subl3 # TODO: make this use $EDITOR or $VISUAL
+PRIMARY=atom # TODO: make this use $EDITOR or $VISUAL
 case "$1" in
   *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
     $PRIMARY -w "$1"

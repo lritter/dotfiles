@@ -5,6 +5,13 @@
 export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 source "$BASH_CONFIG_ROOT"/bash_env
 
+if [ -f /etc/bashrc ]; then
+  . /etc/bashrc        # --> Read /etc/bashrc, if present.
+fi
+
+[[ $- = *i* ]] || return
+
+
 shopt -s histappend # Append to history file instead of overwrite
 
 # Try to load up some completions
@@ -13,12 +20,10 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,update_terminal_cwd.function,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
-
-[[ $- = *i* ]] && source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 
 # Enable some Bash 4 features when possible:
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
@@ -27,16 +32,18 @@ for option in autocd globstar; do
   shopt -s "$option" 2> /dev/null
 done
 
-export PATH="/usr/local/share/npm/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/local/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/Users/lritter/Local/bin:/Users/lritter/.rvm/bin:/usr/local/share/npm/bin:$PATH"
-export PATH="/usr/local/sbin:$PATH"
+# Make bash check its window size after a process completes
+shopt -s checkwinsize
 
-eval "$(rbenv init -)"
-# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function* # export PATH=/usr/local/share/npm/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/local/bin:/Users/lritter/.rvm/gems/ruby-1.8.7-p371/bin:/Users/lritter/.rvm/gems/ruby-1.8.7-p371@global/bin:/Users/lritter/.rvm/rubies/ruby-1.8.7-p371/bin:/Users/lritter/.rvm/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/Users/lritter/Local/bin:/Users/lritter/.rvm/bin:/usr/local/share/npm/bin
-# export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+
+source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
 export ANIMOTO_DIR=/Users/lritter/Documents/Animoto/src/stack/config
+export ANIMOTO_NPM_TOKEN="628805c7-26ab-4506-bc99-6fe2e1d09c1c"
 eval "$(nodenv init -)"
+eval "$(rbenv init -)"
+alias rx='ssh -t -t bastion rx'
 ulimit -n 10240
-export globals
