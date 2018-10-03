@@ -2,10 +2,11 @@
 
 ### Open the argument(s) in an appropriate editor. Try to be smart about it.
 __edit() {
-  PRIMARY=atom # TODO: make this use $EDITOR or $VISUAL
+  PRIMARY=vimr # TODO: make this use $EDITOR or $VISUAL
+  WAIT_FLAG=--wait
   case "$1" in
     *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
-      $PRIMARY -w "$1"
+      $PRIMARY $WAIT_FLAG "$1"
       ;;
     * ) ## For everything else
       if [[ -z "$1" ]]; then
