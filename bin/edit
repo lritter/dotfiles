@@ -1,9 +1,12 @@
 #!/bin/bash
 
-PRIMARY=atom # TODO: make this use $EDITOR or $VISUAL
+PRIMARY=code # TODO: make this use $EDITOR or $VISUAL
+WAIT_FLAG=("--wait")
+GIT_FLAGS=(${WAIT_FLAG[@]})
 case "$1" in
   *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
-    $PRIMARY -w "$1"
+    echo $PRIMARY ${GIT_FLAGS[@]} "$1"
+    $PRIMARY ${GIT_FLAGS[@]} "$1"
     ;;
   * ) ## For everything else
     if [[ -z "$1" || "$1" == "." ]]; then

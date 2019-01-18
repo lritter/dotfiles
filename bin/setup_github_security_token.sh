@@ -1,6 +1,9 @@
 #!/bin/bash
 
-keychain_service_name='Github User Token'
+github_keychain_service_name='Github User Token'
+
+keychain_args="-a ${USER} -s '${github_keychain_service_name}' -w"
+gh_token_cmd="security find-generic-password $keychain_args"
 
 function read_token_from_keychain {
   security find-generic-password -a ${USER} -s "${keychain_service_name}" -w
@@ -24,4 +27,8 @@ function add_github_token_if_needed {
 }
 
 add_github_token_if_needed
-echo Add \"export GITHUB_TOKEN=\$\(security find-generic-password -a ${USER} -s \'"${keychain_service_name}"\' -w\)\" to your .bashrc
+
+# echo $gh_token_cmd
+# alias gh_token='$(security find-generic-password -s '"${keychain_service_name}"' -w)'
+
+echo -e "Add:\n"\"export GITHUB_TOKEN=\$\($gh_token_cmd\)\""\nto your .bashrc"

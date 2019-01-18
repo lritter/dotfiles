@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+container_id_for_app() {
+  docker ps | grep "${1}":latest | awk '{print $1}'
+}
+
+get_app() {
+  basename $(pwd)
+}
+
+__ao_dev_bash_command() {
+  app=$(get_app)
+  container_id=$(container_id_for_app ${app})
+  shell_command=/bin/bash
+  echo "docker exec -it ${container_id} ${shell_command}"
+}
+
+ao_dev_bash() {
+  cmd=$(__ao_dev_bash_command)
+  $cmd
+}
+
+__ao_kill_sentinal='/tmp/__ao_runwait_done'
+
+
+ao_dev_kill() {
+  app=$(get_app)
+  container_id=$(container_id_for_app ${app})
+  kill_command="touch ${__ao_kill_sentinal}"
+  docker exec ${container_id} ${kill_command}
+}
+
+ao_dev_runwait() {
+  app=$(get_app)
+  process_name="ao_shell_${app}"
+  wait_command="while [ ! -f ${__ao_kill_sentinal} ]; do sleep 2; done"
+  # `ao run` prepends all binds with the cwd, so create a path relative to the cwd to
+  # the stack root
+  relative_stack_path=$(realpath --relative-to=$(pwd) /)$ANIMOTO_STACK_ROOT/config
+  ao_command="ao run -v :\"/home/${app}/current\" -v \"/$relative_stack_path\":\"/etc/animoto\" -- \"${wait_command}\""
+  
+  bash -c "exec -a ${process_name} ${ao_command}"
+}
+
+# Monitors a log file given in $1 for a pattern given in $2. Blocks until this happens.
+# Usefull for launching background processes and waiting for some condition to be met
+# before proceding.
+wait_for_log_event() {
+  log="${1}"
+  pattern="${2}"
+  fifo=/tmp/tmpfifo.$$
+  mkfifo "${fifo}"
+  {
+    # run tail in the background so that the shell can
+    # kill tail when notified that grep has exited
+    tail -n 1 -f "${log}" &
+    # remember tail's PID
+    tailpid=$!
+    # wait for notification that grep has exited
+    read foo <${fifo}
+    # grep has exited, time to go
+    kill "${tailpid}" # cleanup tail process
+    rm "${fifo}" # clean up fifo
+  } | {
+    echo "waiting for '${pattern}'" >&2
+    grep -m 1 "${pattern}"
+    
+    # notify the first pipeline stage that grep is done
+    echo >${fifo}
+  }
+}
+
+# Starts a bash shell in your container ao-coordinated container. It will first run the
+# suite of containers as determined by ao. Once those are up and the application container
+# is attached, it will launch a shell in the app container. When the shell exits, the "cluster"
+# is terminated.
+ao_dev_shell() {
+  app=$(get_app)
+  process_name="ao_shell_${app}"
+  
+  tmpfile=$(mktemp /tmp/${process_name}.XXXXXX)
+
+  # Start up app container, spin-waiting, in the backround and logging to a tmpfile
+  ((ao_dev_runwait &> ${tmpfile}) &)
+
+  # Wait until we are attached to the app container
+  wait_for_log_event "${tmpfile}" "Attaching" 
+  ao_dev_bash # Run the get a bash prompt
+  ao_dev_kill # When the shell exits, clean up.
+  
+  rm "${tmpfile}" # clean up the ao log output
+}
+
+export ao_dev_bash 
+export ao_dev_kill
+export ao_dev_runwait
+export ao_dev_shell

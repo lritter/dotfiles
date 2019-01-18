@@ -20,7 +20,7 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function,ao_utils.function}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
@@ -35,15 +35,16 @@ done
 # Make bash check its window size after a process completes
 shopt -s checkwinsize
 
-
-
 source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
 export ANIMOTO_DIR=/Users/lritter/Documents/Animoto/src/stack/config
-export ANIMOTO_NPM_TOKEN="628805c7-26ab-4506-bc99-6fe2e1d09c1c"
 eval "$(nodenv init -)"
 eval "$(rbenv init -)"
-alias rx='ssh -t -t bastion rx'
+
+source "$BASH_CONFIG_ROOT"/setup_ssh.sh
+
 ulimit -n 10240
+export ANIMOTO_NPM_TOKEN="***REMOVED***"
+alias rx='ssh -t -t bastion rx'

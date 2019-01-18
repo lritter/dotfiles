@@ -58,11 +58,16 @@ while [[ $# > 0 ]] ; do
   esac
 done
 
+bastion=proxy-production.animoto.com
+
 if [[ -z ${@} ]]; then
-  echo Executing: ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion 1>&2
-  ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
+  echo Executing: ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" ${bastion} 1>&2
+  ssh -N -L "${_local_port}":"${_target_host}":"${_remote_port}" ${bastion}
 else
-  ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" bastion
+  echo Executing: ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" ${bastion}
+  echo Followed by: $@
+  echo Followed by: ssh -T -O "exit" ${bastion} 
+  ssh -f -N -T -M -L "${_local_port}":"${_target_host}":"${_remote_port}" ${bastion}
   $@
-  ssh -T -O "exit" bastion
+  ssh -T -O "exit" ${bastion}
 fi

@@ -4,6 +4,14 @@ alias be='bundle exec'
 alias serve='python -m SimpleHTTPServer'
 alias open-pr='pull-report --org animoto --pr-url --html | bcat --title="Open Pull Requests"'
 
+
+# Prune dangling and orphaned volumes
+alias prune-docker-volumes='docker volume rm $(docker volume ls -qf dangling=true)'
+# Prune dangling or untagged images
+alias prune-docker-images='docker rmi $(docker images -q -f dangling=true)'
+
+alias ao-head='/Users/lritter/Documents/Animoto/src/stack/src/go/src/github.com/animoto/ao/bin/ao'
+
 # alias 9p="$PLAN9/bin/9p"
 # alias plumber="$PLAN9/bin/plumber"
 # alias 9pserve="$PLAN9/bin/9pserve"
