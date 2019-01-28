@@ -46,5 +46,4 @@ eval "$(rbenv init -)"
 source "$BASH_CONFIG_ROOT"/setup_ssh.sh
 
 ulimit -n 10240
-export ANIMOTO_NPM_TOKEN="8f5565b0-71fd-4533-9d9a-555a2ba9580e"
 alias rx='ssh -t -t bastion rx'
