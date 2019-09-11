@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-pushd $(dirname $(readlink $(which rx)))/.. && git pull && bundle install --deployment && popd
