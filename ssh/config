@@ -1,25 +1,3 @@
-# This is the bastion host configuration at Animoto.
-Host bastion
-  User ubuntu
-  HostName ssh.animoto.com
-  Protocol 2
-  ForwardAgent yes
-  ControlMaster auto
-  ControlPath ~/.ssh/master-%r@%h:%p
-  ControlPersist 60
-  ProxyCommand none
-
-# Use the bastion host for any cloud IP or any Animoto address
-Host 10.* Host *.animoto.com
-  User ubuntu
-  ProxyCommand ssh -A bastion "/bin/dnc %h %p"
-
-# Host *.animoto.com
-#   User root
-#   ForwardAgent yes
-#   StrictHostKeyChecking no
-#   UserKnownHostsFile=/dev/null
-
 KeepAlive yes
 ServerAliveInterval 60
 
