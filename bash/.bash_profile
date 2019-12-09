@@ -2,7 +2,7 @@
 # reliable since normally I symlink it. It's possilble a better alternative is to just
 # assume that it lives at ~/.bash_profile and go from there...
 
-export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+export BASH_CONFIG_ROOT="/Users/$(whoami)/$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 source "$BASH_CONFIG_ROOT"/bash_env
 
 if [ -f /etc/bashrc ]; then
@@ -39,11 +39,10 @@ source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
-export ANIMOTO_DIR=/Users/lritter/Documents/Animoto/src/stack/config
 eval "$(nodenv init -)"
 eval "$(rbenv init -)"
 
 source "$BASH_CONFIG_ROOT"/setup_ssh.sh
 
+source "$BASH_CONFIG_ROOT"/firehydrant.sh
 ulimit -n 10240
-alias rx='ssh -t -t bastion rx'

@@ -17,3 +17,7 @@ Set this up with:
     brew install bash # Build bash
     sudo echo '/usr/local/bin/bash' >> /etc/shells # Add to "approved" shells
     chsh -s /usr/local/bin/bash lritter
+
+    # I do this from my homedir and use, say, src/dotfiles as the dotfiles path
+    ln -s {path-to-cloned-repo}/bash/.bashrc
+    ln -s {path-to-cloned-repo}/bash/.bash_profile 

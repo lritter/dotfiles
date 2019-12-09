@@ -1,13 +1,7 @@
 alias rx='ssh -t -t bastion rx'
 
 # TODO: Make something to reap agents? http://rabexc.org/posts/pitfalls-of-ssh-agents
-# if [ -z "$SSH_AUTH_SOCK" ] ; then
-#     eval `ssh-agent -s` 2>&1 > /dev/null
-#     ssh-add -K ~/.ssh/animoto_id_rsa > /dev/null 2>&1
-# fi
 
-# eval "$(ssh-agent -s)" > /dev/null 2>&1
-# ssh-add -K ~/.ssh/animoto_id_rsa > /dev/null 2>&1
 
 setup_ssh() {
   ssh-add -l &>/dev/null # See if any identies have been added
