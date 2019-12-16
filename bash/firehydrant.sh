@@ -14,9 +14,9 @@ fhconsole() {
 }
 
 put-on-staging() {
-  git checkout staging && git fetch origin && git reset --hard origin/staging && git merge - && git checkout -
+  git checkout staging && git fetch origin && git reset --hard origin/staging && git merge - && git push && git checkout -
 }
 
-export fhconsole
-export put-on-staging
+export -f fhconsole
+export -f put-on-staging
 export PROJECT_LADDERTRUCK_DIR=/Users/lritter/src/laddertruck
