@@ -31,6 +31,14 @@ fhsql() {
   kubectl -n laddertruck exec -ti $(kubectl -n laddertruck get pod -l 'name=rails' -o json | jq -r .items[0].metadata.name) -- bash -c 'psql $DATABASE_URL' 
 }
 
+fh-backup-status() {
+  if [ ! -z "$1" ]; then
+    ctx="$1"
+    kubectl config use-context "$ctx" || return 1
+  fi
+  kubectl get pod --namespace db-backups
+}
+
 put-on-staging() {
   git checkout staging && git fetch origin && git reset --hard origin/staging && git merge - && git push && git checkout -
 }
