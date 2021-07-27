@@ -47,3 +47,7 @@ capybara-*.html
 rerun.txt
 pickle-email-*.html
 .project
+
+# Lincoln's stuff in dev directories #
+######################################
+/.lritter

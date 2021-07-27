@@ -1,10 +1,18 @@
+[url "git@github.com:"]
+	insteadOf = https://github.com/
 [user]
-  name = Lincoln Ritter
-  email = lincoln.ritter@gmail.com
+	name = Lincoln Ritter
+	email = lincoln@firehydrant.io
 [color]
 	ui = true
 [push]
-	default = simple
-
+	default = current
+[core]
+	excludesfile = ~/.gitignore_global
 [alias]
-	update = "pull --rebase origin master "
+	ds = diff --cached
+	update = "pull --rebase origin main"
+	rb = !git-recent-branches
+	purge-local = !git checkout main && git branch -l --merged | grep -vE 'main|master|staging' | xargs git branch -d && git checkout -
+[pull]
+	rebase = true

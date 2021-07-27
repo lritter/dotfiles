@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+list=($(git reflog show --pretty=format:'%gs' --date=relative | awk '/checkout:/ { printf("%s\n%s\n", $4, $6) }' | grep -vE 'staging|main' |  awk -F~ '!seen[$1]++' | head -10))
+
+if [ "$#" -eq 1 ]
+then
+  git checkout "${list[$1-1]}"
+else
+  printf '%s\n' "${list[@]}"
+fi
+
