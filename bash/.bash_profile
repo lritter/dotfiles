@@ -3,6 +3,7 @@
 # assume that it lives at ~/.bash_profile and go from there...
 
 export BASH_CONFIG_ROOT="/Users/$(whoami)/$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+# export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 source "$BASH_CONFIG_ROOT"/bash_env
 
 if [ -f /etc/bashrc ]; then
@@ -10,7 +11,6 @@ if [ -f /etc/bashrc ]; then
 fi
 
 [[ $- = *i* ]] || return
-
 
 shopt -s histappend # Append to history file instead of overwrite
 
@@ -20,10 +20,13 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function,ao_utils.function}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function,google-cloud-sdk.sh,asdf_completion.sh,nvm.sh,spec_for.sh,rbenv.sh}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
+
+# ASDF
+. $(brew --prefix asdf)/asdf.sh
 
 # Enable some Bash 4 features when possible:
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
@@ -39,10 +42,10 @@ source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
-eval "$(nodenv init -)"
-eval "$(rbenv init -)"
 
 source "$BASH_CONFIG_ROOT"/setup_ssh.sh
 
 source "$BASH_CONFIG_ROOT"/firehydrant.sh
 ulimit -n 10240
+
+eval "$(direnv hook bash)"

@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+ref=${1:-main}
+ (git diff --name-only ${ref}  ;  git ls-files --others --exclude-standard)

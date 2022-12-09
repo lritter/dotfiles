@@ -9,6 +9,8 @@ spec_path_for() {
 
   api_prefix="app/api/"
   api_replacement="spec/requests/"
+  lib_replacement="spec/lib/"
+  lib_prefix="lib/"
   standard_prefix="app/"
   standard_replacement="spec/"
 
@@ -18,6 +20,12 @@ spec_path_for() {
   elif [[ ${intermediate} =~ ^${standard_prefix} ]]; then
     replacement_prefix=${standard_prefix}
     replacement=${standard_replacement}
+  elif [[ ${intermediate} =~ ^${lib_prefix} ]]; then
+    replacement_prefix=${lib_prefix}
+    replacement=${lib_replacement}
+  else
+    >&2 echo "no spec path matcher for ${source_path}"
+    exit 1
   fi
 
   target_path=${intermediate/#${replacement_prefix}/${replacement}}
@@ -43,17 +51,26 @@ spec_for() {
 
 specs_for_diff() {
   spec_paths=()
-
   i=0
-  for changed_file in $(git diff --name-only main); do
-    spec_paths[i]=$(spec_path_for ${changed_file})
+  for changed_file in $(git changed-files main | xargs ls -1 {} 2>/dev/null | egrep '\.rb$'); do
+    spec_file=$(spec_path_for ${changed_file} 2>/dev/null)
+    if [ $? = 0 ]; then
+      spec_paths+=(${spec_file})
+    fi
   done
 
-  echo $(echo ${spec_paths} | xargs ls -d 2>/dev/null)
+  printf '%s\n' $(printf '%s\n' "${spec_paths[@]}" | xargs ls -d 2>/dev/null)
 }
 
 if [[ $0 == ${BASH_SOURCE[0]} ]]; then
-  spec_for ${1}
+  args=("$@")
+  if [ ${1} = "path" ]; then
+    spec_for_path "${args[@]:1}"
+  elif [ ${1} = "diff" ]; then
+    specs_for_diff
+  else
+    spec_for "$@"
+  fi
 else
   export spec_for
   export spec_path_for

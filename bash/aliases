@@ -9,7 +9,7 @@ alias prune-docker-volumes='docker volume rm $(docker volume ls -qf dangling=tru
 # Prune dangling or untagged images
 alias prune-docker-images='docker rmi $(docker images -q -f dangling=true)'
 
-alias dc='docker-compose'
+alias dc="${COMPOSE_COMMAND}"
 
 # alias 9p="$PLAN9/bin/9p"
 # alias plumber="$PLAN9/bin/plumber"
