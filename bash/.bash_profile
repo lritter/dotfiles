@@ -1,8 +1,12 @@
 # Try and discover where *this file* lives.  This is a bit annoying and probably not very
 # reliable since normally I symlink it. It's possilble a better alternative is to just
 # assume that it lives at ~/.bash_profile and go from there...
-
-export BASH_CONFIG_ROOT="/Users/$(whoami)/$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+CONFIG_DIR=$( dirname $( readlink "${BASH_SOURCE[0]}" ))
+if [ -d "$CONFIG_DIR" ]; then
+  export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+else
+  export BASH_CONFIG_ROOT="/Users/$(whoami)/$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
+fi
 # export BASH_CONFIG_ROOT="$( dirname $( readlink "${BASH_SOURCE[0]}" ))"
 source "$BASH_CONFIG_ROOT"/bash_env
 
