@@ -7,12 +7,14 @@
 	ui = true
 [push]
 	default = current
-[core]
-	excludesfile = ~/.gitignore_global
+	autoSetupRemote = true
 [alias]
 	ds = diff --cached
 	update = "pull --rebase origin main"
 	rb = !git-recent-branches
 	purge-local = !git checkout main && git branch -l --merged | grep -vE 'main|master|staging' | xargs git branch -d && git checkout -
+	stash-all = !git stash push -u -m
 [pull]
 	rebase = true
+[core]
+	excludesFile = ~/.gitignore_global

@@ -1,0 +1,21 @@
+#/bin/bash
+
+input=""
+
+if [[ -p /dev/stdin ]]; then
+  input="$(cat -)"
+else
+  input="${@}"
+fi
+
+if [[ -z "${input}" ]]; then
+  exit 1
+fi
+
+# Split the input based on whitespace to ensure everything has it's own line.
+# This assumes not spaces in rspec paths.
+input=($input)
+
+# Now print the items in the input each on separate lines and feed to sed to
+# extract rspec paths.
+printf '%s\n' "${input[@]}" | sort | uniq | sed -n 's/.*\(\.\/.*spec\.rb[^ ]*\).*/\1/p'

@@ -12,6 +12,7 @@
 *.log
 *.sql
 *.sqlite
+nohup.out
 
 # OS generated files #
 ######################
@@ -51,3 +52,5 @@ pickle-email-*.html
 # Lincoln's stuff in dev directories #
 ######################################
 /.lritter
+
+/.devcontainer

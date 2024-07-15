@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+issue_id=$1
+issue_data=$(jira issues list --plain --no-headers --columns summary -q"issueKey = $issue_id")
+
+issue_name=$(echo $issue_data | sed -n -e "s/^$issue_id //p")
+
+echo $(echo "$issue_id/$issue_name" | tr '[:upper:]' '[:lower:]' | tr -cd "[:print:]" | tr -cs '[:alnum:]/' '-')
+
+

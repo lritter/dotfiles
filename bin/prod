@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gcloud auth print-access-token && fhd kube console --environment production --reason "'${@}'"

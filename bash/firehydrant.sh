@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
+alias kubestaging=kubectl --context=gke_staging-f5dd003e_us-east4_staginge6eb-us-east4
+alias kubeprod=kubectl --context=gke_production-96f8812d_us-east4_productioneb0c-us-east4
+
 # fhconsole finds an appropriate container and runs the rails console.
 # The command takes and optional argument which is the k8s/kubectl context. If none
 # is given then the current context is used. If given, the context is swtiched (and
@@ -62,3 +67,5 @@ export -f fh-console
 export -f fh-put-on-staging
 export PROJECT_LADDERTRUCK_DIR=/Users/${USER}/src/laddertruck
 export LEFTHOOK=0
+
+export COMPOSE_PROFILES="temporal_runbooks"

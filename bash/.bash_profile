@@ -24,13 +24,13 @@ for file in /usr/local/etc/bash_completion.d/{git-completion.bash,git-prompt.sh,
 done
 unset file
 
-for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function,google-cloud-sdk.sh,asdf_completion.sh,nvm.sh,spec_for.sh,rbenv.sh}; do
+for file in "$BASH_CONFIG_ROOT"/{bash_colors.sh,findmyfile.function,__edit.function,exitstatus_prompt.function,copy.function,history,completion,aliases,misc_functions.function,google-cloud-sdk.sh,nvm.sh,spec_for.sh,rbenv.sh}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
 
 # ASDF
-. $(brew --prefix asdf)/asdf.sh
+# . $(brew --prefix asdf)/asdf.sh
 
 # Enable some Bash 4 features when possible:
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
@@ -52,4 +52,7 @@ source "$BASH_CONFIG_ROOT"/setup_ssh.sh
 source "$BASH_CONFIG_ROOT"/firehydrant.sh
 ulimit -n 10240
 
+bracketed-paste-disable
+
+eval "$(pyenv init -)"
 eval "$(direnv hook bash)"

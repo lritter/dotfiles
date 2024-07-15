@@ -23,6 +23,10 @@ spec_path_for() {
   elif [[ ${intermediate} =~ ^${lib_prefix} ]]; then
     replacement_prefix=${lib_prefix}
     replacement=${lib_replacement}
+  elif [[ ${source_path} =~ ^spec.*_spec\.rb$ ]]; then
+    # If file is already a spec file
+    echo ${source_path}
+    exit 0
   else
     >&2 echo "no spec path matcher for ${source_path}"
     exit 1
@@ -65,7 +69,7 @@ specs_for_diff() {
 if [[ $0 == ${BASH_SOURCE[0]} ]]; then
   args=("$@")
   if [ ${1} = "path" ]; then
-    spec_for_path "${args[@]:1}"
+    spec_path_for "${args[@]:1}"
   elif [ ${1} = "diff" ]; then
     specs_for_diff
   else

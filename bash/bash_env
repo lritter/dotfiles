@@ -24,7 +24,7 @@ export RUBYOPT="-r rubygems"  # Always require rubygems.
 # * LSCOLORS
 export CLICOLOR="exfxcxdxbxegedabagacad"
 
-export PATH="/usr/local/share/npm/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/local/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/Users/${USER}/Local/bin:/Users/${USER}/.rvm/bin:/usr/local/share/npm/bin:$PATH"
+export PATH="/usr/local/share/npm/bin:/opt/homebrew/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/local/bin:/usr/local/heroku/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/Users/${USER}/Local/bin:/Users/${USER}/.rvm/bin:/usr/local/share/npm/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 
 export globals
@@ -40,12 +40,18 @@ export RACK_ENV=development
 export RAILS_ENV=development
 
 export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
+export PYENV_ROOT="$HOME/.pyenv"
+
+VSCODE_PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 DOTFILESPATH=${BASH_CONFIG_ROOT}/..
+PATH=$PATH:$VSCODE_PATH
 PATH=$PATH:$DOTFILESPATH/bin
 PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
+PATH=$PYENV_ROOT/bin:$PATH
+PATH="/Users/lritter/.local/bin:$PATH"
 
 export MYPATHS="/Users/${USER}/src:/Users/${USER}:/Users/${USER}"
 
@@ -68,3 +74,8 @@ PERL_MM_OPT="INSTALL_BASE=/Users/${USER}/perl5"; export PERL_MM_OPT;
 export COMPOSE_COMMAND="docker compose --project-directory=."
 # export GITHUB_TOKEN=$(security find-generic-password -s 'Github User Token' -w)
 
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion

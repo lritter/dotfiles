@@ -7,3 +7,10 @@
 # NB: need to figure out how to do this and the ssh config completion since
 #     right now I'm overwriting
 [ -e "$HOME/.ssh/known_hosts" ] && complete -o "default" -o "nospace" -W "$(cat ~/.ssh/known_hosts | cut -d " " -f1 | cut -d , -f1 | tr ' ' '\n')" scp sftp ssh
+
+# Make sure to install bash-completion with homebrew
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+# source <(jira completion bash)

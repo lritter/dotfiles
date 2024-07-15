@@ -3,6 +3,7 @@
 alias be='bundle exec'
 alias serve='python -m SimpleHTTPServer'
 
+alias pbadd='pbpaste | xargs git add'
 
 # Prune dangling and orphaned volumes
 alias prune-docker-volumes='docker volume rm $(docker volume ls -qf dangling=true)'
