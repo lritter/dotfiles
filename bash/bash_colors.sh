@@ -94,3 +94,5 @@ undcyn=$under$cyan
 undwht=$under$white
 
 fi
+
+source "$BASH_CONFIG_ROOT/base16-solarized-dark.sh"
