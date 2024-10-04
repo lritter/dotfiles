@@ -42,7 +42,7 @@ done
 # Make bash check its window size after a process completes
 shopt -s checkwinsize
 
-source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
+# source "$BASH_CONFIG_ROOT"/liquidprompt/liquidprompt
 export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
@@ -54,5 +54,5 @@ ulimit -n 10240
 
 bracketed-paste-disable
 
-eval "$(pyenv init -)"
-eval "$(direnv hook bash)"
+# eval "$(pyenv init -)"
+# eval "$(direnv hook bash)"
