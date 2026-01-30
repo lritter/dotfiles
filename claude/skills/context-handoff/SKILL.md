@@ -82,27 +82,32 @@ Adapt to what's relevant. Not all sections required.
 [Gotchas, warnings, context that would otherwise be lost]
 ```
 
-## Saving the Handoff Prompt
+## Executing the Handoff
 
-Use the bundled script to save the prompt (handles multi-session via tmux pane ID):
+After user confirms the prompt, run this to save and automatically restart:
 
 ```bash
-cat << 'EOF' | ~/.claude/skills/context-handoff/bin/write-handoff-prompt.sh
+# Save the prompt
+HANDOFF_FILE="$HOME/.claude/handoff-prompts/pane-${TMUX_PANE#%}.md"
+
+cat << 'EOF' > "$HANDOFF_FILE"
 [generated prompt content]
 EOF
+
+# Also copy to clipboard as backup
+cat "$HANDOFF_FILE" | pbcopy
+
+# Trigger the handoff with delay (so this script exits and Claude returns to input loop)
+~/.claude/skills/context-handoff/bin/run-handoff.sh --clear --delay 0.5 "$HANDOFF_FILE"
 ```
 
-This saves to `~/.claude/handoff-prompts/pane-<id>.md` and copies to clipboard.
+This will:
+1. Save the prompt to a pane-specific file
+2. Copy to clipboard as backup
+3. Schedule `/clear` to be sent in 0.5s (after this Bash command exits)
+4. Schedule the continuation prompt to be sent after `/clear`
 
-After saving, tell user:
-
-> Handoff prompt saved. Type `/exit`, then run:
-> ```
-> ~/.claude/skills/context-handoff/bin/run-handoff.sh --clear
-> ```
-> This will send `/clear` and paste the continuation prompt.
-
-**Alternative (manual):** The prompt is also in your clipboard - you can `/clear` and paste manually if preferred.
+**If automatic handoff fails:** The prompt is in your clipboard - just `/clear` and paste manually.
 
 ## Judgment Guidelines
 
