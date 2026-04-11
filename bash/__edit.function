@@ -2,8 +2,13 @@
 
 ### Open the argument(s) in an appropriate editor. Try to be smart about it.
 __edit() {
-  PRIMARY=vimr # TODO: make this use $EDITOR or $VISUAL
-  WAIT_FLAG=--wait
+  # Override per-machine by exporting EDIT_PRIMARY (e.g. EDIT_PRIMARY=vimr).
+  # We can't use $EDITOR/$VISUAL directly because those point at this function.
+  PRIMARY="${EDIT_PRIMARY:-nvim}"
+  case "$PRIMARY" in
+    vimr|code|subl|mate) WAIT_FLAG=--wait ;;
+    *) WAIT_FLAG= ;;
+  esac
   case "$1" in
     *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
       $PRIMARY $WAIT_FLAG "$1"
