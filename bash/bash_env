@@ -7,7 +7,7 @@ export EDITOR=edit
 export VISUAL="$EDITOR"
 
 # Set default Ruby options.
-export RUBYOPT="-r rubygems"  # Always require rubygems.
+export RUBYOPT="-r rubygems" # Always require rubygems.
 
 # if [ "$TERM" != "dumb" ]
 # then
@@ -39,7 +39,8 @@ export CONFIG_ENV=development
 export RACK_ENV=development
 export RAILS_ENV=development
 
-export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
+# export PYTHONPATH="/usr/local/lib/python2.7/site-packages:$PYTHONPATH"
+HOMEBREW_PYTHONPATH="/opt/homebrew/opt/python@3.14/libexec/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 
 VSCODE_PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
@@ -47,11 +48,18 @@ VSCODE_PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 DOTFILESPATH=${BASH_CONFIG_ROOT}/..
 PATH=$PATH:$VSCODE_PATH
 PATH=$PATH:$DOTFILESPATH/bin
-PATH=$PATH:$HOME/Local/bin # Local bin directory for my scripts
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+PATH=$PATH:$BASH_CONFIG_ROOT/bin
+PATH=$PATH:$HOME/Local/bin          # Local bin directory for my scripts
+PATH=$PATH:$HOME/.rvm/bin           # Add RVM to PATH for scripting
 PATH=$PATH:/usr/local/share/npm/bin # Add node.js npm binaries
 PATH=$PYENV_ROOT/bin:$PATH
 PATH="/Users/lritter/.local/bin:$PATH"
+PATH="/opt/homebrew/anaconda3/bin:$PATH" # Add Anaconda3 to PATH
+PATH="${HOMEBREW_PYTHONPATH}:$PATH"      # Add Homebrew Python to PATH
+
+# If you install libpq to get psql (via brew install libpq), you need to add
+# this to your path
+PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 export MYPATHS="/Users/${USER}/src:/Users/${USER}:/Users/${USER}"
 
@@ -63,13 +71,15 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
 HEROKU_TOOLBELT_PATH="/usr/local/heroku/bin"
 
 ### PLAN9
-export PLAN9=/usr/local/Cellar/plan9port/HEAD/libexec
+# export PLAN9=/usr/local/Cellar/plan9port/HEAD/libexec
 # PATH=$PATH:$PLAN9/bin
 
 export PATH="$HEROKU_TOOLBELT_PATH:$GOPATHBIN:~${USER}/bin:$PATH"
 
-PERL_MB_OPT="--install_base \"/Users/${USER}/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/Users/${USER}/perl5"; export PERL_MM_OPT;
+PERL_MB_OPT="--install_base \"/Users/${USER}/perl5\""
+export PERL_MB_OPT
+PERL_MM_OPT="INSTALL_BASE=/Users/${USER}/perl5"
+export PERL_MM_OPT
 
 export COMPOSE_COMMAND="docker compose --project-directory=."
 # export GITHUB_TOKEN=$(security find-generic-password -s 'Github User Token' -w)
@@ -77,5 +87,11 @@ export COMPOSE_COMMAND="docker compose --project-directory=."
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# Set up Go environment variables
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:$GOPATH/bin:/Users/lritter/go/bin"
+
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
