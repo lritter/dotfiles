@@ -4,3 +4,15 @@
 [submodule "bash/liquidprompt"]
 	path = bash/liquidprompt
 	url = git@github.com:lritter/liquidprompt.git
+[submodule "tmux/plugins/tmux"]
+	path = tmux/plugins/tmux
+	url = https://git::@github.com/catppuccin/tmux
+[submodule "tmux/plugins/tmux-which-key"]
+	path = tmux/plugins/tmux-which-key
+	url = https://git::@github.com/alexwforsythe/tmux-which-key
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://git::@github.com/tmux-plugins/tpm
+[submodule "tmux/plugins/vim-tmux-navigator"]
+	path = tmux/plugins/vim-tmux-navigator
+	url = https://git::@github.com/christoomey/vim-tmux-navigator
