@@ -61,6 +61,12 @@ bracketed-paste-disable
 
 cdnvm() {
   command cd "$@" || return $?
+
+  # If nvm isn't loaded, just behave like plain cd.
+  if ! command -v nvm >/dev/null 2>&1; then
+    return 0
+  fi
+
   nvm_path="$(nvm_find_up .nvmrc | command tr -d '\n')"
 
   # If there are no .nvmrc file, use the default nvm version
@@ -71,7 +77,7 @@ cdnvm() {
 
     # If there is no default version, set it to `node`
     # This will use the latest version on your machine
-    if [ $default_version = 'N/A' ]; then
+    if [ "$default_version" = 'N/A' ]; then
       nvm alias default node
       default_version=$(nvm version default)
     fi

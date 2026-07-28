@@ -1,7 +1,12 @@
 #!/bin/bash
 
-PRIMARY=code # TODO: make this use $EDITOR or $VISUAL
-WAIT_FLAG=("--wait")
+# Override per-machine by exporting EDIT_PRIMARY (e.g. EDIT_PRIMARY=code).
+# We can't use $EDITOR/$VISUAL directly because those point at this script.
+PRIMARY="${EDIT_PRIMARY:-nvim}"
+case "$PRIMARY" in
+  vimr|code|subl|mate) WAIT_FLAG=("--wait") ;;
+  *) WAIT_FLAG=() ;;
+esac
 GIT_FLAGS=(${WAIT_FLAG[@]})
 case "$1" in
   *_EDITMSG|*MERGE_MSG|*_TAGMSG|*git-rebase-todo ) ## First check to see if we are editing a commit message or similar.
