@@ -15,3 +15,5 @@ alias dc="${COMPOSE_COMMAND}"
 # alias 9p="$PLAN9/bin/9p"
 # alias plumber="$PLAN9/bin/plumber"
 # alias 9pserve="$PLAN9/bin/9pserve"
+
+alias claude-neu='CLAUDE_CONFIG_DIR=~/SupplyTrace/src/claude-config command claude'
