@@ -1,0 +1,56 @@
+{
+  "skill_name": "extract-entities",
+  "evals": [
+    {
+      "id": 0,
+      "name": "politico-tariffs",
+      "prompt": "Can you pull out all the companies and organizations mentioned in this article and put them in a CSV for me? https://www.politico.com/news/2026/06/02/the-u-s-eyes-a-10-percent-tariff-on-canada-mexico-and-the-eu-over-forced-labor-laws-00947863?__cf_chl_tk=bo9L5ixa4C1b3UwnQGE5fcANFYvh4yFW9Ul2UUEAyxs-1780477555-1.0.1.1-JdmhVM67aIXLBGpR_zJYd5MvCsDdYq2eNRZI2K5_IjQ",
+      "expected_output": "A CSV with the canonical 10-column schema. Because the page is Cloudflare-blocked, the skill should either write a header-only CSV (no fabricated rows) or extract from a verified alternate copy of the same article, keeping source_url as the Politico URL. Government bodies typed as government_agency, not company.",
+      "files": [],
+      "assertions": [
+        "Header is exactly: entity_name,entity_type,aliases,location,role,concern_type,concern_detail,confidence,quote,source_url",
+        "CSV is well-formed: every data row has exactly 10 fields",
+        "Every data row's source_url equals the requested Politico URL (N/A if header-only)",
+        "All entity_type values are from the controlled vocabulary",
+        "All concern_type tokens are from the controlled vocabulary (including none)",
+        "All confidence values are high/medium/low",
+        "No fabricated entities: with the source blocked, output is header-only or sourced from a real alternate copy"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "dod-1260h-pdf",
+      "prompt": "This is the DoD's Section 1260H list of Chinese military companies operating in the US. I need every entity on it in a spreadsheet. https://media.defense.gov/2026/Jun/08/2003945537/-1/-1/1/ENTITIES-IDENTIFIED-AS-CHINESE-MILITARY-COMPANIES-OPERATING-IN-THE-UNITED-STATES-IN-ACCORDANCE-WITH-SECTION-1260H.PDF",
+      "expected_output": "A CSV extracted from the PDF (downloaded, not WebFetched) with one row per listed company, aliases captured, entity_type=company, concern_type=sanctions, confidence high, source_url=the PDF URL.",
+      "files": [],
+      "assertions": [
+        "Header is exactly: entity_name,entity_type,aliases,location,role,concern_type,concern_detail,confidence,quote,source_url",
+        "CSV is well-formed: every data row has exactly 10 fields",
+        "Every data row's source_url equals the requested PDF URL",
+        "All entity_type values are from the controlled vocabulary",
+        "All concern_type tokens are from the controlled vocabulary (including none)",
+        "All confidence values are high/medium/low",
+        "Captures the bulk of the listed companies (at least 80 entity rows)",
+        "Designated companies are typed as company"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "bbc-article",
+      "prompt": "extract the firms/orgs from this bbc story into a csv with their locations and any wrongdoing mentioned: https://www.bbc.com/news/articles/cvg7d83nl7no",
+      "expected_output": "Company-default behavior: a CSV centered on TN Trawlers (the firm at the center of the story) with its concern fields populated and a verbatim quote, source_url=the BBC URL. Government/enforcement bodies (courts, Police Scotland, Home Office, Border Force, MCA, Crown Office), the NGO Open Seas, the ITF union, and the BBC should be left OUT of the CSV by default and offered in the report. People are not given their own rows. Vessels are not entities.",
+      "files": [],
+      "assertions": [
+        "Header is exactly: entity_name,entity_type,aliases,location,role,concern_type,concern_detail,confidence,quote,source_url",
+        "CSV is well-formed: every data row has exactly 10 fields",
+        "Every data row's source_url equals the requested BBC URL",
+        "All entity_type values are from the controlled vocabulary",
+        "All concern_type tokens are from the controlled vocabulary (including none)",
+        "All confidence values are high/medium/low",
+        "TN Trawlers is present and carries a wrongdoing concern_type (forced_labor / human_rights / legal_action)",
+        "Non-company bodies (courts, Police Scotland, Home Office, Border Force, MCA, Crown Office, Open Seas, ITF, BBC) are NOT rows by default",
+        "Individual people (e.g. Thomas Nicholson) are not given their own entity rows"
+      ]
+    }
+  ]
+}

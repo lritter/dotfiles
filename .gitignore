@@ -1,0 +1,4 @@
+.DS_Store
+
+# Eval scratch output from skill development, not a skill itself
+claude/skills/extract-entities-workspace/
