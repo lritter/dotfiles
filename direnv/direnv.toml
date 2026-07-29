@@ -1,0 +1,6 @@
+[whitelist]
+prefix = [
+  "~/SupplyTrace/src/supply-trace-be/",
+  "~/SupplyTrace/src/supply-trace-be-worktrees/",
+]
+
