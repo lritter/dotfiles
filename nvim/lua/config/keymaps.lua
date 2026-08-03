@@ -71,3 +71,11 @@ vim.keymap.set("n", "<leader>xdd", function()
   run_mypy()
   open_trouble_qf()
 end, { desc = "All (ruff + mypy)" })
+
+vim.keymap.set("n", "<leader>cf", function()
+  local path = vim.fn.expand("%:.")
+  local line = vim.fn.line(".")
+  local result = path .. ":" .. line
+  vim.fn.setreg("+", result)
+  vim.notify("Copied: " .. result)
+end, { desc = "Copy file path and line number" })
