@@ -1,0 +1,6 @@
+# Press T to maximize the preview pane (fills the screen), press again to
+# restore. Provided by the toggle-pane plugin (`ya pkg add yazi-rs/plugins:toggle-pane`).
+[[mgr.prepend_keymap]]
+on   = "T"
+run  = "plugin toggle-pane max-preview"
+desc = "Maximize or restore the preview pane"
