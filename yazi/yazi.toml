@@ -1,0 +1,7 @@
+# yazi main config — tracked in dotfiles, symlinked to ~/.config/yazi.
+# Intentionally minimal: everything here merges *over* yazi's built-in defaults,
+# so anything omitted keeps yazi's default behavior (including image preview,
+# which works when yazi runs in a normal tmux pane with `allow-passthrough on`).
+#
+# See ./popup/yazi.toml for the preview-disabled config used by the tmux
+# `<prefix> b` floating popup, where Ghostty's image rendering crashes tmux.
