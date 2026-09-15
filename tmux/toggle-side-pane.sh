@@ -17,8 +17,8 @@ mode="$2"
 path="$3"
 shift 3
 
-existing=$(tmux list-panes -F '#{pane_id}|#{@side_marker}' \
-  | awk -F'|' -v m="$marker" '$2 == m { print $1; exit }')
+existing=$(tmux list-panes -F '#{pane_id}|#{@side_marker}' |
+  awk -F'|' -v m="$marker" '$2 == m { print $1; exit }')
 
 if [ -n "$existing" ]; then
   if [ "$mode" = "focus" ]; then
@@ -27,6 +27,6 @@ if [ -n "$existing" ]; then
     tmux kill-pane -t "$existing"
   fi
 else
-  tmux split-window -fbh -l 40% -c "$path" "$*"
+  tmux split-window -fbh -l 40% -c "$path" "$@"
   tmux set -p @side_marker "$marker"
 fi
