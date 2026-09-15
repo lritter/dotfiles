@@ -16,3 +16,6 @@
 [submodule "tmux/plugins/vim-tmux-navigator"]
 	path = tmux/plugins/vim-tmux-navigator
 	url = https://git::@github.com/christoomey/vim-tmux-navigator
+[submodule "tmux/plugins/tmux-fzf-links"]
+	path = tmux/plugins/tmux-fzf-links
+	url = https://git::@github.com/alberti42/tmux-fzf-links
