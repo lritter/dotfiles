@@ -1,2 +1,3 @@
 # .bash_profile to rule them all...
 [ -n "$PS1" ] && source ~/.bash_profile
+source /Users/lritter/.local/share/leaf/completions/leaf.bash
