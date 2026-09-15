@@ -3,5 +3,15 @@ use = "yazi-rs/plugins:toggle-pane"
 rev = "b9598e6"
 hash = "15e5b67a241172cbb86b8fbf9e63692"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:piper"
+rev = "0be29a9"
+hash = "f23ecc89ce0f9eeefdd4cea14e2a9ba7"
+
+[[plugin.deps]]
+use = "alberti42/faster-piper"
+rev = "8b794bf"
+hash = "fac71f8ce9447ad509b5aad9e0d8c694"
+
 [flavor]
 deps = []

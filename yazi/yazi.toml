@@ -5,3 +5,19 @@
 #
 # See ./popup/yazi.toml for the preview-disabled config used by the tmux
 # `<prefix> b` floating popup, where Ghostty's image rendering crashes tmux.
+
+[mgr]
+ratio = [0, 2, 6]  # Hide parent folder panel
+show_hidden = true
+
+[[plugin.prepend_previewers]]
+url = "*.csv"
+run = 'faster-piper -- bat -p --color=always "$1"'
+
+[[plugin.prepend_previewers]]
+url = "*.md"
+run = 'faster-piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark -- "$1"'
+
+[[plugin.prepend_previewers]]
+url = "*.tar*"
+run = 'faster-piper --format=url -- tar tf "$1"'
