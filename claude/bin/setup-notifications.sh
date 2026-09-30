@@ -18,8 +18,9 @@
 #                      portable across Apple Silicon / Intel Macs).
 #   3. chmod +x      — ensures notify.sh and ghostty-focus.sh are executable
 #                      on every machine (git doesn't always preserve this).
-#   4. settings.json — merges the Notification / Stop / SubagentStop hooks
-#                      into <CONFIG_DIR>/settings.json via jq, backing up the
+#   4. settings.json — wires notify.sh into the "needs you" Notification
+#                      matchers (and out of Stop / SubagentStop) in
+#                      <CONFIG_DIR>/settings.json via jq, backing up the
 #                      original to settings.json.bak.<timestamp> first.
 #   5. Permission    — triggers macOS notification-permission dialog once so
 #                      the first real notification isn't silently dropped.
@@ -114,36 +115,38 @@ log "  backup: $BACKUP"
 
 NOTIFY_CMD="\$HOME/src/dotfiles/claude/bin/notify.sh"
 
-# Build the desired hooks block and merge it over the existing one. We
-# overwrite the three event entries outright (Notification, Stop, SubagentStop)
-# while preserving any other existing entries inside Stop (e.g. the
-# claude-statusline-cleanup.sh command) by reading them first.
+# Notify only when a session is blocked on the user: a permission prompt, an
+# MCP elicitation form, or ~60s idle after a turn ends (idle_prompt, which
+# self-debounces background-agent wakeups). notify.sh goes first in each of
+# those Notification matchers; other hooks there (e.g. tmux-state.sh) are kept.
+# notify.sh is stripped from Stop / SubagentStop — every turn and subagent end
+# was too noisy — and Claude Code's built-in channel is disabled so Ghostty
+# doesn't post a duplicate banner.
 TMP_OUT=$(mktemp)
 "$JQ_BIN" --arg cmd "$NOTIFY_CMD" '
-  # Preserve any non-notify commands already configured under Stop.
-  # Parens matter: `as` binds tighter than `|`, so without them the
-  # trailing `.hooks = ...` would run against the extras array.
-  (
-    (.hooks.Stop // [])
-    | map(.hooks // [])
-    | add // []
-    | map(select(.command != null and (.command | contains("notify") | not)))
-  ) as $extra_stop_hooks
-  |
-  .hooks = ((.hooks // {}) + {
-    Notification: [
-      { matcher: "idle_prompt",       hooks: [ { type: "command", command: $cmd } ] },
-      { matcher: "permission_prompt", hooks: [ { type: "command", command: $cmd } ] }
-    ],
-    Stop: [
-      {
-        hooks: ([ { type: "command", command: $cmd } ] + $extra_stop_hooks)
-      }
-    ],
-    SubagentStop: [
-      { hooks: [ { type: "command", command: $cmd } ] }
-    ]
-  })
+  def notify_hook: { type: "command", command: $cmd };
+  def is_notify: (.command // "") | contains("notify.sh");
+  def strip_notify:
+    map(.hooks = ((.hooks // []) | map(select(is_notify | not))))
+    | map(select((.hooks | length) > 0));
+  def ensure_notify($m):
+    if any(.[]; .matcher == $m)
+    then map(if .matcher == $m
+             then .hooks = ([notify_hook] + ((.hooks // []) | map(select(is_notify | not))))
+             else . end)
+    else . + [{ matcher: $m, hooks: [notify_hook] }]
+    end;
+
+  .hooks = (.hooks // {})
+  | .hooks.Notification = ((.hooks.Notification // [])
+      | ensure_notify("permission_prompt")
+      | ensure_notify("idle_prompt")
+      | ensure_notify("elicitation_dialog"))
+  | .hooks.Stop = ((.hooks.Stop // []) | strip_notify)
+  | .hooks.SubagentStop = ((.hooks.SubagentStop // []) | strip_notify)
+  | if .hooks.Stop == [] then del(.hooks.Stop) else . end
+  | if .hooks.SubagentStop == [] then del(.hooks.SubagentStop) else . end
+  | .preferredNotifChannel = "notifications_disabled"
 ' "$SETTINGS_FILE" > "$TMP_OUT"
 
 mv "$TMP_OUT" "$SETTINGS_FILE"
@@ -161,14 +164,13 @@ cat <<'EOF'
 ==> Step 6/6: setup complete. Next steps:
 
   1. In a running Claude Code session, run:   /hooks
-     Confirm Notification (idle_prompt + permission_prompt), Stop,
-     and SubagentStop entries all point at notify.sh.
+     Confirm the Notification matchers (permission_prompt, idle_prompt,
+     elicitation_dialog) point at notify.sh, and Stop / SubagentStop
+     do not.
 
-  2. Trigger each event and listen for the distinct sound:
-       - permission prompt  -> Glass
-       - idle / input wait  -> Glass
-       - natural Stop       -> Hero
-       - SubagentStop       -> Tink
+  2. Trigger a permission prompt and listen for Glass. Then have
+     Claude ask a question, walk away, and confirm a banner arrives
+     within ~60s (idle_prompt).
 
   3. Click a notification from another app — Ghostty should
      foreground and the correct tmux pane should be selected.

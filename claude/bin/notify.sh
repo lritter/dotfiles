@@ -1,7 +1,8 @@
 #!/bin/bash
 # Claude Code notification dispatcher.
 #
-# Invoked by Notification / Stop / SubagentStop hooks in ~/.claude/settings.json.
+# Invoked by the "needs you" Notification hooks (permission_prompt, idle_prompt,
+# elicitation_dialog) in ~/.claude/settings.json.
 # Reads the Claude Code hook payload from stdin (JSON) and fires a native macOS
 # notification via terminal-notifier. Clicking the notification runs
 # ghostty-focus.sh to select the originating tmux pane and bring Ghostty forward.
@@ -27,29 +28,14 @@ INPUT=$(cat)
 
 # Defensive defaults: the Notification payload schema isn't fully documented,
 # so every jq expression falls back to empty string rather than null-crashing.
-EVENT=$(printf '%s' "$INPUT" | "$JQ" -r '.hook_event_name // ""')
 MESSAGE=$(printf '%s' "$INPUT" | "$JQ" -r '.message // ""')
 TITLE=$(printf '%s' "$INPUT" | "$JQ" -r '.title // ""')
 CWD=$(printf '%s' "$INPUT" | "$JQ" -r '.cwd // ""')
 SESSION_ID=$(printf '%s' "$INPUT" | "$JQ" -r '.session_id // ""')
 
-case "$EVENT" in
-  Stop)
-    : "${MESSAGE:=Task completed}"
-    : "${TITLE:=Claude Code}"
-    SOUND="Hero"
-    ;;
-  SubagentStop)
-    : "${MESSAGE:=Subagent done}"
-    : "${TITLE:=Claude Code}"
-    SOUND="Tink"
-    ;;
-  Notification|*)
-    : "${MESSAGE:=Needs attention}"
-    : "${TITLE:=Claude Code}"
-    SOUND="Glass"
-    ;;
-esac
+: "${MESSAGE:=Needs attention}"
+: "${TITLE:=Claude Code}"
+SOUND="Glass"
 
 # Append project name to title so concurrent sessions are distinguishable.
 if [[ -n "$CWD" ]]; then
