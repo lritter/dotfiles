@@ -16,4 +16,7 @@ alias dc="${COMPOSE_COMMAND}"
 # alias plumber="$PLAN9/bin/plumber"
 # alias 9pserve="$PLAN9/bin/9pserve"
 
+# Workmux alias
+alias wm='workmux'
+
 alias claude-neu='CLAUDE_CONFIG_DIR=~/SupplyTrace/src/claude-config command claude'

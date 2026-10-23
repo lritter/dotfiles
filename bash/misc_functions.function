@@ -17,3 +17,18 @@ rainbow() {
 #   plumber 2&>1 > /dev/null
 #   TERM=dumb SHELL=rc nohup 9 acme -a -f $PLAN9/font/fixed/unicode.9x18.font $* > /dev/null &
 # }
+# Start a ticket in its own workmux worktree + window, branched from a fresh
+# origin/main, with Claude already running /st implement on it:
+#   wmt STH-1540 search-tuning [-b]   (extra args go to `workmux add`)
+# Clean up after the PR squash-merges (remote branch deleted): wmt-clean
+wmt() {
+  local id=$1 slug=$2
+  if [[ ! $id =~ ^STH-[0-9]+$ || -z $slug ]]; then
+    echo "usage: wmt STH-<n> <kebab-summary> [workmux add flags]" >&2
+    return 2
+  fi
+  shift 2
+  git fetch origin main --quiet &&
+    workmux add "$id-$slug" --base origin/main -p "/st implement $id" "$@"
+}
+alias wmt-clean='git fetch --prune origin && workmux rm --gone'

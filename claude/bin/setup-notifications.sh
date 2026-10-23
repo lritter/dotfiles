@@ -118,7 +118,7 @@ NOTIFY_CMD="\$HOME/src/dotfiles/claude/bin/notify.sh"
 # Notify only when a session is blocked on the user: a permission prompt, an
 # MCP elicitation form, or ~60s idle after a turn ends (idle_prompt, which
 # self-debounces background-agent wakeups). notify.sh goes first in each of
-# those Notification matchers; other hooks there (e.g. tmux-state.sh) are kept.
+# those Notification matchers; other hooks there (e.g. workmux status) are kept.
 # notify.sh is stripped from Stop / SubagentStop — every turn and subagent end
 # was too noisy — and Claude Code's built-in channel is disabled so Ghostty
 # doesn't post a duplicate banner.

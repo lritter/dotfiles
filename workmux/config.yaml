@@ -1,0 +1,41 @@
+# workmux global config. ~/.config/workmux -> ~/src/dotfiles/workmux
+# Reference: `workmux config reference`. No per-repo .workmux.yaml: repo setup
+# (.envrc/.local links, venv, node_modules) comes from each repo's own
+# post-checkout hook, which `git worktree add` fires.
+
+nerdfont: true
+mode: window
+
+# Siblings of the repo, e.g. supply-trace-be-worktrees/<handle>.
+worktree_dir: ../{project}-worktrees
+
+# Branch from main, not whatever the current worktree has checked out.
+base_branch: auto
+
+# workmux creates worktrees without firing git's post-checkout hook, so run the
+# repo's own hook the way `git worktree add` would (null previous HEAD). Its
+# slow parts (venv, pnpm) background themselves, so this doesn't hold the window.
+post_create:
+  - 'hook="$(git rev-parse --path-format=absolute --git-common-dir)/hooks/post-checkout"; if [ -x "$hook" ]; then "$hook" 0000000000000000000000000000000000000000 "$(git rev-parse HEAD)" 1; fi'
+
+panes:
+  - command: <agent>
+    focus: true
+
+# tmux.conf renders @workmux_status inside the catppuccin tab; don't let
+# workmux append its own copy to window-status-format.
+status_format: false
+# Nerdfont glyphs in catppuccin mocha colors: nf-md-robot, nf-fa-comment,
+# nf-md-check_circle. Setting `working` swaps the sidebar's spinner for the robot.
+# The trailing space matters: Ghostty only draws an icon full-size when the next
+# cell is blank, and here the next cell is otherwise the tab's closing edge.
+status_icons:
+  working: "#[fg=#f9e2af]\U000F06A9 #[fg=default]"
+  waiting: "#[fg=#fab387] #[fg=default]"
+  done: "#[fg=#a6e3a1]\U000F05E0 #[fg=default]"
+
+# Worktrees live for a ticket's whole review cycle, not an afternoon.
+stale_after: 24h
+
+sidebar:
+  position: top
