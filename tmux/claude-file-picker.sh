@@ -36,6 +36,7 @@ session_for_pane() {
 # side pane (nvim/lazygit/yazi) rather than the Claude pane, fall back to the
 # most-recently-active session among all panes in the origin's window.
 sid="$(session_for_pane "$origin")"
+sid_pane="$origin"
 if [ -z "$sid" ] && [ -n "$origin" ]; then
   win="$(tmux display-message -p -t "$origin" '#{window_id}' 2>/dev/null || true)"
   if [ -n "$win" ]; then
@@ -44,9 +45,9 @@ if [ -z "$sid" ] && [ -n "$origin" ]; then
       s="$(session_for_pane "$p")"; [ -n "$s" ] || continue
       lg="$state/sessions/$s.log"; [ -f "$lg" ] || continue
       m="$(stat -f %m "$lg" 2>/dev/null || echo 0)"
-      if [ "$m" -gt "$best_mtime" ]; then best_mtime="$m"; best="$s"; fi
+      if [ "$m" -gt "$best_mtime" ]; then best_mtime="$m"; best="$s"; best_pane="$p"; fi
     done < <(tmux list-panes -t "$win" -F '#{pane_id}' 2>/dev/null)
-    sid="$best"
+    sid="$best" sid_pane="${best_pane:-}"
   fi
 fi
 
@@ -55,17 +56,31 @@ fi
 log="$state/sessions/$sid.log"
 [ -f "$log" ] || { note "No files recorded yet for this session."; exit 0; }
 
-# Newest first, de-duplicated, existing files only.
+# Display paths relative to the Claude pane's cwd (else ~-abbreviated).
+base="$(tmux display-message -p -t "${sid_pane:-$origin}" '#{pane_current_path}' 2>/dev/null || true)"
+[ -n "$base" ] || base="/nonexistent"  # never match, never strip "/"
+display_path() {
+  case "$1" in
+    "$base"/*) printf '%s' "${1#"$base"/}" ;;
+    "$HOME"/*) printf '~/%s' "${1#"$HOME"/}" ;;
+    *)         printf '%s' "$1" ;;
+  esac
+}
+
+# Newest first, de-duplicated, existing files only. Lines are
+# "<display>\t<absolute path>"; fzf shows field 1, previews/opens field 2.
 existing=""
 while IFS= read -r f || [ -n "$f" ]; do
-  [ -n "$f" ] && [ -e "$f" ] && existing="${existing}${f}"$'\n'
+  [ -n "$f" ] && [ -e "$f" ] && existing="${existing}$(display_path "$f")"$'\t'"${f}"$'\n'
 done < <(tail -r "$log" | awk '!seen[$0]++')
 [ -n "$existing" ] || { note "No existing files to show for this session."; exit 0; }
 
 sel="$(printf '%s' "$existing" | fzf \
   --prompt='claude files > ' \
-  --preview 'bat --color=always --style=numbers --line-range=:500 {} 2>/dev/null || cat {}' \
+  --delimiter=$'\t' --with-nth=1 --keep-right \
+  --preview 'bat --color=always --style=numbers --line-range=:500 {2} 2>/dev/null || cat {2}' \
   --preview-window='right,60%,border-left')" || exit 0
+sel="${sel#*$'\t'}"
 [ -n "$sel" ] || exit 0
 
 # Look up the opener by extension (exact match wins; "*" is the fallback).
