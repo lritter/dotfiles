@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # tmux file picker over the files Claude wrote/edited this session, newest
 # first. Preview with bat; on Enter, open per ~/.config/tmux/claude-openers.conf
-# (terminal apps in a full-height left split, GUI apps detached).
+# (terminal apps in a full-height left split, GUI apps detached). ctrl-o opens a
+# terminal app in its own new Ghostty window instead, which closes on quit.
 #
 # Meant to be launched from a display-popup binding, given the ORIGIN pane id:
 #   bind C-f display-popup -w 80% -h 80% -E \
@@ -75,11 +76,15 @@ while IFS= read -r f || [ -n "$f" ]; do
 done < <(tail -r "$log" | awk '!seen[$0]++')
 [ -n "$existing" ] || { note "No existing files to show for this session."; exit 0; }
 
-sel="$(printf '%s' "$existing" | fzf \
+out="$(printf '%s' "$existing" | fzf \
   --prompt='claude files > ' \
+  --header='enter: open   ctrl-o: open in new Ghostty window' \
+  --expect=ctrl-o \
   --delimiter=$'\t' --with-nth=1 --keep-right \
   --preview 'bat --color=always --style=numbers --line-range=:500 {2} 2>/dev/null || cat {2}' \
   --preview-window='right,60%,border-left')" || exit 0
+key="$(printf '%s\n' "$out" | sed -n 1p)"
+sel="$(printf '%s\n' "$out" | sed -n 2p)"
 sel="${sel#*$'\t'}"
 [ -n "$sel" ] || exit 0
 
@@ -95,11 +100,44 @@ if [ -f "$conf" ]; then
 fi
 [ -n "$mode" ] || { mode="$dmode"; cmd="$dcmd"; }
 [ -n "$mode" ] || { mode="split"; cmd="bat --paging=always"; }
+# ctrl-o detaches terminal openers into their own window (GUI apps already are).
+[ "$key" = ctrl-o ] && [ "$mode" != gui ] && mode=window
+
+# New Ghostty window (via its AppleScript API) running "<cmd> <file>"; the
+# ghostty-run-and-close.sh wrapper closes it when the command exits. Ghostty starts commands with a bare launchd PATH, so
+# pass ours (and a few other vars the viewers care about) through.
+open_window() {
+  local env=() v
+  for v in PATH XDG_CONFIG_HOME EDITOR LANG LC_ALL BAT_THEME; do
+    [ -n "${!v:-}" ] && env+=("$v=${!v}")
+  done
+  osascript - "$1" "$2" "${env[@]}" >/dev/null <<'OSA'
+on run argv
+  set envs to {}
+  repeat with i from 3 to count of argv
+    set end of envs to item i of argv
+  end repeat
+  tell application "Ghostty"
+    set cfg to new surface configuration
+    set command of cfg to item 1 of argv
+    set initial working directory of cfg to item 2 of argv
+    set environment variables of cfg to envs
+    activate
+    new window with configuration cfg
+  end tell
+end run
+OSA
+}
 
 case "$mode" in
   gui)
     # Non-terminal app; launch detached, no split.
     nohup $cmd "$sel" >/dev/null 2>&1 &
+    ;;
+  window)
+    open_window "$HOME/.config/tmux/ghostty-run-and-close.sh $cmd $(printf '%q' "$sel")" \
+      "$(dirname "$sel")" \
+      || note "Couldn't open a Ghostty window (Automation permission?)."
     ;;
   *)
     # Full-height left split in the origin's window, matching toggle-side-pane.sh.

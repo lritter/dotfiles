@@ -16,8 +16,16 @@ base_branch: auto
 # repo's own hook the way `git worktree add` would (null previous HEAD). Its
 # slow parts (venv, pnpm) background themselves, so this doesn't hold the window.
 post_create:
-  - direnv allow
   - 'hook="$(git rev-parse --path-format=absolute --git-common-dir)/hooks/post-checkout"; if [ -x "$hook" ]; then "$hook" 0000000000000000000000000000000000000000 "$(git rev-parse HEAD)" 1; fi'
+  # After the hook, which may link in an untracked .envrc.
+  - "if [ -f .envrc ]; then direnv allow; fi"
+
+# Stop the worktree's stdev services (SupplyTrace) before it goes; elsewhere
+# stdev doesn't exist and this is a no-op. Listing anything here replaces the
+# default node_modules fast-delete, so keep it.
+pre_remove:
+  - 'stdev="$WM_PROJECT_ROOT/.local/bin/stdev"; if [ -x "$stdev" ]; then "$stdev" down "$WM_HANDLE" || true; fi'
+  - "<cleanup-node-modules>"
 
 panes:
   - command: <agent>
@@ -45,4 +53,6 @@ dashboard:
   merge: "!gh pr view --web"
 
 sidebar:
-  position: top
+  position: left # or top
+  width: 40 # columns, or a percentage like "15%"
+  height: 10% # only applies to position: top

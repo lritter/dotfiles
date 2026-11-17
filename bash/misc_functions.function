@@ -32,3 +32,6 @@ wmt() {
     workmux add "$id-$slug" --base origin/main -p "/st implement $id" "$@"
 }
 alias wmt-clean='git fetch --prune origin && workmux rm --gone'
+
+# SupplyTrace dev services (emulator + per-worktree API/trace-app) in st-svc.
+alias stdev="$HOME/SupplyTrace/src/supply-trace-be/.local/bin/stdev"
