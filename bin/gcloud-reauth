@@ -3,7 +3,6 @@
 # flow, and report whether they are still valid.
 #
 #   gcloud-reauth            log in (user credential + ADC), then re-check
-#   gcloud-reauth popup      run the login in a tmux popup that closes when done
 #   gcloud-reauth status     real check; prints ok|expired|unknown, exits 0 only on ok
 #   gcloud-reauth chip       tmux status-line chip from a cached check (never blocks)
 #
@@ -114,22 +113,12 @@ login() {
   return "$rc"
 }
 
-popup() {
-  if [ -z "${TMUX:-}" ]; then
-    echo "gcloud-reauth popup: not inside tmux; run 'gcloud-reauth' instead" >&2
-    return 1
-  fi
-  tmux display-popup -w 70% -h 50% -T " gcloud re-auth " -E "$SELF login"
-  [ "$(cat "$CACHE_FILE" 2>/dev/null)" = ok ]
-}
-
 case "${1:-login}" in
   login) login ;;
-  popup) popup ;;
   status) status ;;
   chip) chip ;;
   *)
-    echo "usage: gcloud-reauth [login|popup|status|chip]" >&2
+    echo "usage: gcloud-reauth [login|status|chip]" >&2
     exit 2
     ;;
 esac
