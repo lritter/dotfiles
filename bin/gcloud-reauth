@@ -1,0 +1,135 @@
+#!/bin/bash
+# Re-authenticate gcloud and Application Default Credentials in one browser
+# flow, and report whether they are still valid.
+#
+#   gcloud-reauth            log in (user credential + ADC), then re-check
+#   gcloud-reauth popup      run the login in a tmux popup that closes when done
+#   gcloud-reauth status     real check; prints ok|expired|unknown, exits 0 only on ok
+#   gcloud-reauth chip       tmux status-line chip from a cached check (never blocks)
+#
+# Why one flow: `gcloud auth login --update-adc` writes the same grant to ADC,
+# so the two no longer expire at different times. Set GCLOUD_REAUTH_TWO_STEP=1
+# to fall back to two separate logins if a client library rejects that ADC.
+
+set -u
+
+SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/gcloud-reauth"
+CACHE_FILE="$CACHE_DIR/status"
+LOCK_DIR="$CACHE_DIR/lock"
+CHIP_MAX_AGE=300 # seconds between background re-checks
+
+mtime() { stat -f %m "$1" 2>/dev/null || echo 0; }
+
+# Prints ok|expired|unknown. The ADC call mints a fresh token every time, so it
+# is a true test of the session. The user-credential call can be served from
+# gcloud's token cache for up to an hour, so it only catches a clear expiry.
+check() {
+  local err
+  for cmd in "auth application-default print-access-token" "auth print-access-token"; do
+    # shellcheck disable=SC2086
+    if ! err=$(gcloud $cmd 2>&1 >/dev/null); then
+      if grep -qiE 'reauth|invalid_grant|auth login|application-default login|credentials' <<<"$err"; then
+        echo expired
+      else
+        echo unknown # offline, gcloud missing, etc.
+      fi
+      return
+    fi
+  done
+  echo ok
+}
+
+refresh_cache() {
+  mkdir -p "$CACHE_DIR"
+  local state
+  state=$(check)
+  echo "$state" >"$CACHE_FILE.tmp" && mv "$CACHE_FILE.tmp" "$CACHE_FILE"
+  [ -n "${TMUX:-}" ] && tmux refresh-client -S 2>/dev/null
+  echo "$state"
+}
+
+status() {
+  local state
+  state=$(refresh_cache)
+  echo "$state"
+  [ "$state" = ok ]
+}
+
+chip() {
+  mkdir -p "$CACHE_DIR"
+  local now
+  now=$(date +%s)
+  if [ $((now - $(mtime "$CACHE_FILE"))) -ge "$CHIP_MAX_AGE" ]; then
+    # Drop a lock left behind by a check that died.
+    [ -d "$LOCK_DIR" ] && [ $((now - $(mtime "$LOCK_DIR"))) -ge 60 ] && rmdir "$LOCK_DIR" 2>/dev/null
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      (
+        refresh_cache >/dev/null
+        rmdir "$LOCK_DIR" 2>/dev/null
+      ) >/dev/null 2>&1 &
+    fi
+  fi
+
+  local state color label
+  state=$(cat "$CACHE_FILE" 2>/dev/null || echo unknown)
+  case "$state" in
+    ok) color="#a6e3a1" label="gcp" ;;
+    expired) color="#f38ba8" label="gcp expired" ;;
+    *) color="#6c7086" label="gcp ?" ;;
+  esac
+  local left right
+  left=$(printf '\xee\x82\xb6')
+  right=$(printf '\xee\x82\xb4')
+  echo "#[fg=${color},bg=default]${left}#[fg=#1e1e2e,bg=${color}]${label}#[fg=${color},bg=default]${right}"
+}
+
+login() {
+  local account project rc=0
+  account=$(gcloud config get account 2>/dev/null)
+  project=$(gcloud config get project 2>/dev/null)
+
+  if [ -n "${GCLOUD_REAUTH_TWO_STEP:-}" ]; then
+    # shellcheck disable=SC2086
+    gcloud auth login $account && gcloud auth application-default login || rc=$?
+  else
+    # shellcheck disable=SC2086
+    gcloud auth login $account --update-adc || rc=$?
+  fi
+
+  # --update-adc may write ADC without a quota project; put it back.
+  local adc="${CLOUDSDK_CONFIG:-$HOME/.config/gcloud}/application_default_credentials.json"
+  if [ "$rc" -eq 0 ] && [ -n "$project" ] && ! grep -q '"quota_project_id"' "$adc" 2>/dev/null; then
+    gcloud auth application-default set-quota-project "$project" || rc=$?
+  fi
+
+  local state
+  state=$(refresh_cache)
+  echo "gcloud auth: $state"
+  [ "$state" = ok ] || rc=1
+
+  if [ "$rc" -ne 0 ] && [ -t 0 ]; then
+    read -r -p "Re-auth did not complete. Press enter to close. " _
+  fi
+  return "$rc"
+}
+
+popup() {
+  if [ -z "${TMUX:-}" ]; then
+    echo "gcloud-reauth popup: not inside tmux; run 'gcloud-reauth' instead" >&2
+    return 1
+  fi
+  tmux display-popup -w 70% -h 50% -T " gcloud re-auth " -E "$SELF login"
+  [ "$(cat "$CACHE_FILE" 2>/dev/null)" = ok ]
+}
+
+case "${1:-login}" in
+  login) login ;;
+  popup) popup ;;
+  status) status ;;
+  chip) chip ;;
+  *)
+    echo "usage: gcloud-reauth [login|popup|status|chip]" >&2
+    exit 2
+    ;;
+esac
