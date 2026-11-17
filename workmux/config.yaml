@@ -56,3 +56,15 @@ sidebar:
   position: left # or top
   width: 40 # columns, or a percentage like "15%"
   height: 10% # only applies to position: top
+  # Lead each row with its number; tmux binds prefix 1..9 to
+  # `workmux sidebar jump N` (tmux/sidebar-nav.conf). Otherwise the defaults.
+  templates:
+    compact: "#[fg=#f9e2af]{idx}#[fg=default] {status_icon} {primary} {pane_suffix} {fill} {elapsed}"
+    tiles:
+      - "#[fg=#f9e2af]{idx}#[fg=default] {primary} {pane_suffix} {fill} {elapsed}"
+      - "{secondary} {fill} {git_stats}"
+      - "{pane_title} {fill} {pr_number} {pr_checks}"
+    grouped:
+      tiles:
+        - "#[fg=#f9e2af]{idx}#[fg=default] {primary} {pane_suffix} {fill} {pr_number} {pr_checks} {elapsed}"
+        - "{pane_title} {fill} {git_stats}"
