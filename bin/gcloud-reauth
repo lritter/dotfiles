@@ -9,6 +9,10 @@
 # Why one flow: `gcloud auth login --update-adc` writes the same grant to ADC,
 # so the two no longer expire at different times. Set GCLOUD_REAUTH_TWO_STEP=1
 # to fall back to two separate logins if a client library rejects that ADC.
+#
+# --force: with an account named, gcloud otherwise "re-uses locally stored
+# credentials" even when they need reauth, skipping the browser and falling
+# back to a terminal password prompt instead.
 
 set -u
 
@@ -90,10 +94,10 @@ login() {
 
   if [ -n "${GCLOUD_REAUTH_TWO_STEP:-}" ]; then
     # shellcheck disable=SC2086
-    gcloud auth login $account && gcloud auth application-default login || rc=$?
+    gcloud auth login $account --force && gcloud auth application-default login || rc=$?
   else
     # shellcheck disable=SC2086
-    gcloud auth login $account --update-adc || rc=$?
+    gcloud auth login $account --force --update-adc || rc=$?
   fi
 
   # --update-adc may write ADC without a quota project; put it back.
